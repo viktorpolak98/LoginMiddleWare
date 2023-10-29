@@ -1,5 +1,8 @@
 package Controller;
 
+import Model.DbCalls;
+import Model.Request;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -13,14 +16,12 @@ public class CallerController {
     private final int OK_CODE = 200;
     private final String BAD_REQUEST_STR = "Bad request";
     private final String OK_STR = "OK";
-    private DbCaller dbCaller;
 
     public CallerController(){
         port(8080);
 
         try{
             initRoutes();
-            dbCaller = new DbCaller();
         } catch (Exception e){
             e.printStackTrace();
         }
@@ -54,7 +55,7 @@ public class CallerController {
                 res.header(BAD_REQUEST_STR, BAD_REQUEST_CODE);
                 return res;
             }
-            dbCaller.updatePassword(req.params(":username"), req.params(":password"));
+            RequestHandler.addRequest(new Request(req.params(":username"), req.params(":password"), DbCalls.updatePassword));
 
             res.header(OK_STR, OK_CODE);
             return res;
@@ -65,7 +66,7 @@ public class CallerController {
                 res.header(BAD_REQUEST_STR, BAD_REQUEST_CODE);
                 return res;
             }
-            dbCaller.removeUser(req.params(":username"));
+            RequestHandler.addRequest(new Request(req.params(":username"), null, DbCalls.removeUser));
 
             res.header(OK_STR, OK_CODE);
             return res;
@@ -76,7 +77,7 @@ public class CallerController {
                 res.header(BAD_REQUEST_STR, BAD_REQUEST_CODE);
                 return res;
             }
-            dbCaller.createUser(req.params(":username"), req.params(":password"));
+            RequestHandler.addRequest(new Request(req.params(":username"), req.params(":password"), DbCalls.createUser));
 
             res.header(OK_STR, OK_CODE);
             return res;
@@ -87,7 +88,7 @@ public class CallerController {
                 res.header(BAD_REQUEST_STR, BAD_REQUEST_CODE);
                 return res;
             }
-            dbCaller.authenticate(req.params(":username"), req.params(":password"));
+            RequestHandler.addRequest(new Request(req.params(":username"), req.params(":password"), DbCalls.authenticateUser));
 
             res.header(OK_STR, OK_CODE);
             return res;
@@ -98,7 +99,7 @@ public class CallerController {
                 res.header(BAD_REQUEST_STR, BAD_REQUEST_CODE);
                 return res;
             }
-            dbCaller.getUser(req.params(":username"));
+            RequestHandler.addRequest(new Request(req.params(":username"), null, DbCalls.getUser));
 
             res.header(OK_STR, OK_CODE);
             return res;
