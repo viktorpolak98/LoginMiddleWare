@@ -2,24 +2,23 @@ package Controller;
 
 import Model.DbCalls;
 import Model.Request;
+import spark.Response;
+import spark.Route;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import static javax.servlet.http.HttpServletResponse.SC_OK;
 import static spark.Spark.*;
 
 public class CallerController {
+    private final int INTERNAL_SERVER_ERROR_CODE = 500;
     private final int BAD_REQUEST_CODE = 400;
     private final int OK_CODE = 200;
+    private final String INTERNAL_SERVER_ERROR_STR = "Request failed due to internal server error";
     private final String BAD_REQUEST_STR = "Bad request";
     private final String OK_STR = "OK";
+    private final RequestHandler requestHandler;
 
     public CallerController(){
         port(8080);
-
+        requestHandler = new RequestHandler();
         try{
             initRoutes();
         } catch (Exception e){
@@ -55,9 +54,11 @@ public class CallerController {
                 res.header(BAD_REQUEST_STR, BAD_REQUEST_CODE);
                 return res;
             }
-            RequestHandler.addRequest(new Request(req.params(":username"), req.params(":password"), DbCalls.updatePassword));
+            boolean requestStatus = requestHandler.
+                    performRequest(new Request(req.params(":username"), req.params(":password"), DbCalls.updatePassword)).get();
 
-            res.header(OK_STR, OK_CODE);
+            setResHeader(requestStatus, res);
+
             return res;
         });
 
@@ -66,9 +67,11 @@ public class CallerController {
                 res.header(BAD_REQUEST_STR, BAD_REQUEST_CODE);
                 return res;
             }
-            RequestHandler.addRequest(new Request(req.params(":username"), null, DbCalls.removeUser));
+            boolean requestStatus = requestHandler.
+                    performRequest(new Request(req.params(":username"), DbCalls.removeUser)).get();
 
-            res.header(OK_STR, OK_CODE);
+            setResHeader(requestStatus, res);
+
             return res;
         });
 
@@ -77,9 +80,12 @@ public class CallerController {
                 res.header(BAD_REQUEST_STR, BAD_REQUEST_CODE);
                 return res;
             }
-            RequestHandler.addRequest(new Request(req.params(":username"), req.params(":password"), DbCalls.createUser));
 
-            res.header(OK_STR, OK_CODE);
+            boolean requestStatus = requestHandler.
+                    performRequest(new Request(req.params(":username"), req.params(":password"), DbCalls.createUser)).get();
+
+            setResHeader(requestStatus, res);
+
             return res;
         });
 
@@ -88,9 +94,12 @@ public class CallerController {
                 res.header(BAD_REQUEST_STR, BAD_REQUEST_CODE);
                 return res;
             }
-            RequestHandler.addRequest(new Request(req.params(":username"), req.params(":password"), DbCalls.authenticateUser));
 
-            res.header(OK_STR, OK_CODE);
+            boolean requestStatus = requestHandler.
+                    performRequest(new Request(req.params(":username"), req.params(":password"), DbCalls.authenticateUser)).get();
+
+            setResHeader(requestStatus, res);
+
             return res;
         });
 
@@ -99,11 +108,22 @@ public class CallerController {
                 res.header(BAD_REQUEST_STR, BAD_REQUEST_CODE);
                 return res;
             }
-            RequestHandler.addRequest(new Request(req.params(":username"), null, DbCalls.getUser));
 
-            res.header(OK_STR, OK_CODE);
+            boolean requestStatus = requestHandler.
+                    performRequest(new Request(req.params(":username"), DbCalls.getUser)).get();
+
+            setResHeader(requestStatus, res);
+
             return res;
         });
+    }
+
+    private void setResHeader(boolean ok, Response res){
+        if (ok){
+            res.header(OK_STR, OK_CODE);
+        } else {
+            res.header(INTERNAL_SERVER_ERROR_STR, INTERNAL_SERVER_ERROR_CODE);
+        }
     }
 
     private boolean validateCall(String... params){
