@@ -34,7 +34,7 @@ public class DbCaller {
             }
 
             case getUser -> {
-                return getUser(request.getUsername());
+                return userExists(request.getUsername());
             }
 
             case authenticateUser -> {
@@ -47,23 +47,54 @@ public class DbCaller {
 
 
     private boolean createUser(String username, String password) {
-        //TODO: Implement
-        return true;
+        try(CallableStatement statement = con.prepareCall("{call CreateUser(?,?)}")){
+            statement.setString(1, username);
+            statement.setString(2, password);
+
+            statement.execute();
+
+            CallableStatement userExists = con.prepareCall("{call GetUser(?)}");
+            userExists.setString(1, username);
+
+            return userExists.execute();
+        } catch (SQLException e){
+            e.printStackTrace();
+            return false;
+        }
     }
 
     private boolean removeUser(String username) {
-        //TODO: Implement
-        return true;
+        try(CallableStatement statement = con.prepareCall("{call DeleteUser(?)}")){
+            statement.setString(1, username);
+
+            return statement.execute();
+        } catch (SQLException e){
+            e.printStackTrace();
+            return false;
+        }
     }
 
     private boolean updatePassword(String username, String password) {
-        //TODO: Implement
-        return true;
+        try(CallableStatement statement = con.prepareCall("{call UpdatePassword(?,?)}")){
+            statement.setString(1, username);
+            statement.setString(2, password);
+
+            return statement.execute();
+        } catch (SQLException e){
+            e.printStackTrace();
+            return false;
+        }
     }
 
-    private boolean getUser(String username) {
-        //TODO: Implement
-        return true;
+    private boolean userExists(String username) {
+        try(CallableStatement statement = con.prepareCall("{call GetUser(?)}")){
+            statement.setString(1, username);
+
+            return statement.execute();
+        } catch (SQLException e){
+            e.printStackTrace();
+            return false;
+        }
     }
 
     private boolean authenticate(String username, String password) {
