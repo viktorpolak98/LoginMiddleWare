@@ -19,7 +19,7 @@ public class DbCaller {
         return con.isValid(5000);
     }
 
-    public boolean execute(Request request){
+    public synchronized boolean execute(Request request){
         switch (request.getCall()){
             case createUser -> {
                 return createUser(request.getUsername(), request.getPassword());

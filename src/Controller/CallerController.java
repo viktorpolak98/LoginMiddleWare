@@ -55,7 +55,7 @@ public class CallerController {
                 return res;
             }
             boolean requestStatus = requestHandler.
-                    performRequest(new Request(req.params(":username"), req.params(":password"), DbCalls.updatePassword)).get();
+                    performRequest(new Request(req.params(":username"), req.params(":password"), DbCalls.updatePassword));
 
             setResHeader(requestStatus, res);
 
@@ -68,7 +68,7 @@ public class CallerController {
                 return res;
             }
             boolean requestStatus = requestHandler.
-                    performRequest(new Request(req.params(":username"), DbCalls.removeUser)).get();
+                    performRequest(new Request(req.params(":username"), DbCalls.removeUser));
 
             setResHeader(requestStatus, res);
 
@@ -82,7 +82,7 @@ public class CallerController {
             }
 
             boolean requestStatus = requestHandler.
-                    performRequest(new Request(req.params(":username"), req.params(":password"), DbCalls.createUser)).get();
+                    performRequest(new Request(req.params(":username"), req.params(":password"), DbCalls.createUser));
 
             setResHeader(requestStatus, res);
 
@@ -96,7 +96,7 @@ public class CallerController {
             }
 
             boolean requestStatus = requestHandler.
-                    performRequest(new Request(req.params(":username"), req.params(":password"), DbCalls.authenticateUser)).get();
+                    performRequest(new Request(req.params(":username"), req.params(":password"), DbCalls.authenticateUser));
 
             setResHeader(requestStatus, res);
 
@@ -110,7 +110,7 @@ public class CallerController {
             }
 
             boolean requestStatus = requestHandler.
-                    performRequest(new Request(req.params(":username"), DbCalls.getUser)).get();
+                    performRequest(new Request(req.params(":username"), DbCalls.getUser));
 
             setResHeader(requestStatus, res);
 
