@@ -6,11 +6,12 @@ import java.sql.SQLException;
 import java.util.concurrent.*;
 
 public class RequestHandler {
-    private final DbCaller dbCaller = new DbCaller();
+    private final DbCaller dbCaller;
     private final ExecutorService executorService = Executors.newCachedThreadPool();
     private boolean connected = true;
 
-    public RequestHandler(){
+    public RequestHandler(DbCaller dbCaller){
+        this.dbCaller = dbCaller;
         checkConnection();
     }
 

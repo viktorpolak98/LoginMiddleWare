@@ -16,9 +16,9 @@ public class CallerController {
     private final String OK_STR = "OK";
     private final RequestHandler requestHandler;
 
-    public CallerController(){
+    public CallerController(String dbUrl){
         port(8080);
-        requestHandler = new RequestHandler();
+        requestHandler = new RequestHandler(new DbCaller(dbUrl));
         try{
             initRoutes();
         } catch (Exception e){
