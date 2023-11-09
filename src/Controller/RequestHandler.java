@@ -36,7 +36,7 @@ public class RequestHandler {
                     connected = false;
                 }
             }
-        });
+        }).start();
 
     }
 }
