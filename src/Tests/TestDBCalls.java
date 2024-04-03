@@ -4,8 +4,12 @@ import Controller.CallerController;
 import Controller.DbCaller;
 import Model.DbCalls;
 import Model.Request;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class TestDBCalls {
@@ -20,12 +24,17 @@ public class TestDBCalls {
 
     @Test
     public void testAllCalls(){
-        //TODO: implement
-        dbCaller.execute(new Request(userName, password, DbCalls.createUser));
-        dbCaller.execute(new Request(userName, password, DbCalls.authenticateUser));
-        dbCaller.execute(new Request(userName, "new_" + password, DbCalls.updatePassword));
-        dbCaller.execute(new Request(userName, DbCalls.getUser));
-        dbCaller.execute(new Request(userName, DbCalls.removeUser));
+        List<Boolean> resultList = List.of(
+                dbCaller.execute(new Request(userName, password, DbCalls.createUser)),
+                dbCaller.execute(new Request(userName, password, DbCalls.authenticateUser)),
+                dbCaller.execute(new Request(userName, "new_" + password, DbCalls.updatePassword)),
+                dbCaller.execute(new Request(userName, DbCalls.getUser)),
+                dbCaller.execute(new Request(userName, DbCalls.removeUser))
+        );
+
+        for (Boolean bool : resultList) {
+            Assertions.assertTrue(bool);
+        }
     }
 
     @Test
@@ -35,7 +44,14 @@ public class TestDBCalls {
 
     @Test
     public void testGetCall(){
-        //TODO: implement
+        boolean bool = dbCaller.execute(new Request(userName, password, DbCalls.createUser));
+        Assertions.assertTrue(bool);
+
+        bool = dbCaller.execute(new Request(userName, DbCalls.getUser));
+        Assertions.assertTrue(bool);
+
+        bool = dbCaller.execute(new Request("non-existent user", DbCalls.getUser));
+        Assertions.assertFalse(bool);
     }
 
     @Test
@@ -45,7 +61,23 @@ public class TestDBCalls {
 
     @Test
     public void testCreateCall(){
-        //TODO: implement
+        boolean bool = dbCaller.execute(new Request(userName, password, DbCalls.createUser));
+        Assertions.assertTrue(bool);
+
+        bool = dbCaller.execute(new Request(userName, password, DbCalls.createUser));
+        Assertions.assertFalse(bool);
+
+        bool = dbCaller.execute(new Request(null, password, DbCalls.createUser));
+        Assertions.assertFalse(bool);
+
+        bool = dbCaller.execute(new Request("", password, DbCalls.createUser));
+        Assertions.assertFalse(bool);
+
+        bool = dbCaller.execute(new Request("user", null, DbCalls.createUser));
+        Assertions.assertFalse(bool);
+
+        bool = dbCaller.execute(new Request("user", "", DbCalls.createUser));
+        Assertions.assertFalse(bool);
     }
 
     @Test

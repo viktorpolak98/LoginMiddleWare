@@ -3,7 +3,6 @@ package Controller;
 import Model.DbCalls;
 import Model.Request;
 import spark.Response;
-import spark.Route;
 
 import static spark.Spark.*;
 
@@ -50,7 +49,7 @@ public class CallerController {
 
 
         patch("/update-password/:username/:password", (req, res) -> {
-            if (!validateCall(req.params(":username"), req.params(":password"))){
+            if (invalidCall(req.params(":username"), req.params(":password"))){
                 res.header(BAD_REQUEST_STR, BAD_REQUEST_CODE);
                 return res;
             }
@@ -63,7 +62,7 @@ public class CallerController {
         });
 
         delete("/remove/:username", (req, res) -> {
-            if (!validateCall(req.params(":username"))){
+            if (invalidCall(req.params(":username"))){
                 res.header(BAD_REQUEST_STR, BAD_REQUEST_CODE);
                 return res;
             }
@@ -76,7 +75,7 @@ public class CallerController {
         });
 
         post("/new-user/:username/:password", (req, res) -> {
-            if(!validateCall(req.params(":username"), req.params(":password"))){
+            if(invalidCall(req.params(":username"), req.params(":password"))){
                 res.header(BAD_REQUEST_STR, BAD_REQUEST_CODE);
                 return res;
             }
@@ -90,7 +89,7 @@ public class CallerController {
         });
 
         get("/authenticate/:username/:password/", (req, res) -> {
-            if(!validateCall(req.params(":username"), req.params(":password"))){
+            if(invalidCall(req.params(":username"), req.params(":password"))){
                 res.header(BAD_REQUEST_STR, BAD_REQUEST_CODE);
                 return res;
             }
@@ -104,7 +103,7 @@ public class CallerController {
         });
 
         get("/user/:username", (req, res) -> {
-            if(!validateCall(req.params(":username"))){
+            if(invalidCall(req.params(":username"))){
                 res.header(BAD_REQUEST_STR, BAD_REQUEST_CODE);
                 return res;
             }
@@ -126,12 +125,13 @@ public class CallerController {
         }
     }
 
-    private boolean validateCall(String... params){
-        boolean valid = true;
+    private boolean invalidCall(String... params){
         for (String s : params) {
-            valid = valid && !s.isBlank();
+            if(s.isBlank()){
+                return true;
+            }
         }
 
-        return valid;
+        return false;
     }
 }
