@@ -14,9 +14,12 @@ public class CallerController {
     private final String BAD_REQUEST_STR = "Bad request";
     private final String OK_STR = "OK";
     private final RequestHandler requestHandler;
+    private ConfigurationController configurationController;
 
     public CallerController(String dbUrl){
         port(8080);
+        //TODO: Change to environment variable
+        configurationController = new ConfigurationController("../Config/AllowedCallers.config");
         requestHandler = new RequestHandler(new DbCaller(dbUrl));
         try{
             initRoutes();
@@ -123,6 +126,10 @@ public class CallerController {
         } else {
             res.header(INTERNAL_SERVER_ERROR_STR, INTERNAL_SERVER_ERROR_CODE);
         }
+    }
+
+    private boolean allowedCaller(String caller){
+        return configurationController.checkIfAllowedCaller(caller);
     }
 
     private boolean invalidCall(String... params){

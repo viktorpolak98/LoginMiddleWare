@@ -16,7 +16,7 @@ public class ConfigurationController {
         }
     }
 
-    public Optional<String> getAllowedCaller(String caller){
-        return Optional.ofNullable(prop.getProperty(caller));
+    public boolean checkIfAllowedCaller(String caller){
+        return prop.getProperty(caller) != null;
     }
 }
