@@ -2,7 +2,6 @@ package Controller;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Optional;
 import java.util.Properties;
 
 public class ConfigurationController {
@@ -16,7 +15,7 @@ public class ConfigurationController {
         }
     }
 
-    public boolean checkIfAllowedCaller(String caller){
+    public boolean checkIfAllowedHost(String caller){
         return prop.getProperty(caller) != null;
     }
 }

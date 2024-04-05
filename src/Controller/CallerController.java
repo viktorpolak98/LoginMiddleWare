@@ -3,23 +3,25 @@ package Controller;
 import Model.DbCalls;
 import Model.Request;
 import spark.Response;
+import spark.Route;
 
 import static spark.Spark.*;
 
 public class CallerController {
     private final int INTERNAL_SERVER_ERROR_CODE = 500;
     private final int BAD_REQUEST_CODE = 400;
+    private final int FORBIDDEN_HOST_CODE = 401;
     private final int OK_CODE = 200;
     private final String INTERNAL_SERVER_ERROR_STR = "Request failed due to internal server error";
     private final String BAD_REQUEST_STR = "Bad request";
     private final String OK_STR = "OK";
     private final RequestHandler requestHandler;
-    private ConfigurationController configurationController;
+    private final ConfigurationController configurationController;
 
-    public CallerController(String dbUrl){
+
+    public CallerController(String dbUrl, String allowedHostsConfig){
         port(8080);
-        //TODO: Change to environment variable
-        configurationController = new ConfigurationController("../Config/AllowedCallers.config");
+        configurationController = new ConfigurationController(allowedHostsConfig);
         requestHandler = new RequestHandler(new DbCaller(dbUrl));
         try{
             initRoutes();
@@ -48,7 +50,12 @@ public class CallerController {
                 }
         );
 
-        before((request, response) -> response.header("Access-Control-Allow-Origin", "*"));
+        before((request, response) -> {
+            if (!allowedHost(request.host())){
+                response.header(BAD_REQUEST_STR, FORBIDDEN_HOST_CODE);
+            }
+            response.header("Access-Control-Allow-Origin", "*");
+        });
 
 
         patch("/update-password/:username/:password", (req, res) -> {
@@ -128,8 +135,8 @@ public class CallerController {
         }
     }
 
-    private boolean allowedCaller(String caller){
-        return configurationController.checkIfAllowedCaller(caller);
+    private boolean allowedHost(String caller){
+        return configurationController.checkIfAllowedHost(caller);
     }
 
     private boolean invalidCall(String... params){
