@@ -23,12 +23,7 @@ public class CallerController {
         port(8080);
         configurationController = new ConfigurationController(allowedHostsConfig);
         requestHandler = new RequestHandler(new DbCaller(dbUrl));
-        try{
-            initRoutes();
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-
+        initRoutes();
     }
 
     public void initRoutes() {
