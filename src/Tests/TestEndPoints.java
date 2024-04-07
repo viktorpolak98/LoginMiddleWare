@@ -1,6 +1,7 @@
 package Tests;
 
 import Controller.CallerController;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -21,6 +22,9 @@ public class TestEndPoints {
         } catch (MalformedURLException e){
             e.printStackTrace();
         }
+        //If either assumption fails no tests should run
+        Assumptions.assumeFalse(url == null);
+        Assumptions.assumeFalse(url.getPath().isBlank());
     }
 
     @Test
