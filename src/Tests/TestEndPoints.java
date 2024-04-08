@@ -12,30 +12,41 @@ import java.net.URI;
 import java.net.URL;
 
 public class TestEndPoints {
-    private static URL url;
+    private static String BASE_URL;
 
     @BeforeAll
     public static void setUp(){
         new CallerController(System.getenv("mockDbUrl"), System.getenv("AllowedHostsConfig"));
-        try {
-            url = URI.create(System.getenv("TestUrl")).toURL();
-        } catch (MalformedURLException e){
-            e.printStackTrace();
-        }
-        //If either assumption fails no tests should run
-        Assumptions.assumeFalse(url == null);
-        Assumptions.assumeFalse(url.getPath().isBlank());
+        BASE_URL = System.getenv("TestUrl");
     }
 
     @Test
     public void testCreateUser(){
         HttpURLConnection connection;
+        URL url = createUrl("/create-user");
+
+        Assumptions.assumeFalse(url == null);
+        Assumptions.assumeFalse(url.getPath().isBlank());
+
         try {
+
             connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
+            connection.setRequestMethod("POST");
+
+
             //TODO finish implementing
         } catch (IOException e){
             e.printStackTrace();
         }
+    }
+
+    private URL createUrl(String endpoint){
+        URL url = null;
+        try {
+            url = URI.create(BASE_URL+endpoint).toURL();
+        } catch (MalformedURLException e){
+            e.printStackTrace();
+        }
+        return url;
     }
 }

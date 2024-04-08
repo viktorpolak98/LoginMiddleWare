@@ -79,7 +79,7 @@ public class CallerController {
             return res;
         });
 
-        post("/new-user/:username/:password", (req, res) -> {
+        post("/create-user/:username/:password", (req, res) -> {
             if(invalidCall(req.params(":username"), req.params(":password"))){
                 res.header(BAD_REQUEST_STR, BAD_REQUEST_CODE);
                 return res;
