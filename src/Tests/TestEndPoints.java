@@ -27,8 +27,7 @@ public class TestEndPoints {
 
     @Test
     public void testCreateMultipleUsers(){
-        List<String> usernames = new ArrayList<>();
-        List<String> passwords = new ArrayList<>();
+        List<User> users = new ArrayList<>();
         Vector<String> results = new Vector<>();
 
 
@@ -89,5 +88,22 @@ public class TestEndPoints {
             e.printStackTrace();
         }
         return url;
+    }
+
+    private class User{
+        String username;
+        String password;
+        public User(String username, String password){
+            this.username = username;
+            this.password = password;
+        }
+
+        public String getUsername() {
+            return username;
+        }
+
+        public String getPassword() {
+            return password;
+        }
     }
 }
