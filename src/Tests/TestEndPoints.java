@@ -12,6 +12,9 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
 
 public class TestEndPoints {
     private static String BASE_URL;
@@ -23,7 +26,19 @@ public class TestEndPoints {
     }
 
     @Test
-    public void testCreateUser(){
+    public void testCreateMultipleUsers(){
+        List<String> usernames = new ArrayList<>();
+        List<String> passwords = new ArrayList<>();
+        Vector<String> results = new Vector<>();
+
+
+        for (int i = 0; i < results.size(); i++) {
+            Assertions.assertEquals("HTTP/1.0 200 OK", results.get(i), "Assert failed on " + i);
+        }
+    }
+
+    @Test
+    public void testCreateSingleUser(){
         HttpURLConnection connection;
 
         //replace with Testdata.Testdata.xml later.
