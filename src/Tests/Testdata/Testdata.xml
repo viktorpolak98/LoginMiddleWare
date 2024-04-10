@@ -3,4 +3,40 @@
         <username>user</username>
         <password>password</password>
     </user>
+    <user>
+        <username>user1</username>
+        <password>password1</password>
+    </user>
+    <user>
+        <username>user2</username>
+        <password>password2</password>
+    </user>
+    <user>
+        <username>user3</username>
+        <password>password3</password>
+    </user>
+    <user>
+        <username>user4</username>
+        <password>password4</password>
+    </user>
+    <user>
+        <username>user5</username>
+        <password>password5</password>
+    </user>
+    <user>
+        <username>user6</username>
+        <password>password6</password>
+    </user>
+    <user>
+        <username>user7</username>
+        <password>password7</password>
+    </user>
+    <user>
+        <username>user8</username>
+        <password>password8</password>
+    </user>
+    <user>
+        <username>user9</username>
+        <password>password9</password>
+    </user>
 </testdata>

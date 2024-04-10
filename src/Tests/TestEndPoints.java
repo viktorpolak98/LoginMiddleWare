@@ -27,7 +27,7 @@ public class TestEndPoints {
 
     @Test
     public void testCreateMultipleUsers(){
-        List<User> users = new ArrayList<>();
+        List<User> users = createUsers();
         Vector<String> results = new Vector<>();
 
 
@@ -88,6 +88,11 @@ public class TestEndPoints {
             e.printStackTrace();
         }
         return url;
+    }
+
+    private List<User> createUsers(){
+        //TODO: implement reading from Testdata.xml and create users
+        return new ArrayList<>();
     }
 
     private class User{
