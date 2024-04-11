@@ -1,6 +1,5 @@
 package Tests;
 
-import Controller.CallerController;
 import Controller.DbCaller;
 import Model.DbCalls;
 import Model.Request;
@@ -10,14 +9,13 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.List;
 
 
 public class TestDBCalls {
     private static DbCaller dbCaller;
-    private static String userName = "new_user";
-    private static String password = "password";
+    private static final String username = "new_user";
+    private static final String password = "password";
 
     @BeforeAll
     public static void setUp(){
@@ -40,11 +38,11 @@ public class TestDBCalls {
     @Test
     public void testAllCalls(){
         List<Boolean> resultList = List.of(
-                dbCaller.execute(new Request(userName, password, DbCalls.createUser)),
-                dbCaller.execute(new Request(userName, password, DbCalls.authenticateUser)),
-                dbCaller.execute(new Request(userName, "new_" + password, DbCalls.updatePassword)),
-                dbCaller.execute(new Request(userName, DbCalls.getUser)),
-                dbCaller.execute(new Request(userName, DbCalls.removeUser))
+                dbCaller.execute(new Request(username, password, DbCalls.createUser)),
+                dbCaller.execute(new Request(username, password, DbCalls.authenticateUser)),
+                dbCaller.execute(new Request(username, "new_" + password, DbCalls.updatePassword)),
+                dbCaller.execute(new Request(username, DbCalls.getUser)),
+                dbCaller.execute(new Request(username, DbCalls.removeUser))
         );
 
         for (Boolean bool : resultList) {
@@ -54,10 +52,10 @@ public class TestDBCalls {
 
     @Test
     public void testGetCall(){
-        boolean bool = dbCaller.execute(new Request(userName, password, DbCalls.createUser));
+        boolean bool = dbCaller.execute(new Request(username, password, DbCalls.createUser));
         Assertions.assertTrue(bool);
 
-        bool = dbCaller.execute(new Request(userName, DbCalls.getUser));
+        bool = dbCaller.execute(new Request(username, DbCalls.getUser));
         Assertions.assertTrue(bool);
 
         bool = dbCaller.execute(new Request("non-existent user", DbCalls.getUser));
@@ -66,19 +64,19 @@ public class TestDBCalls {
 
     @Test
     public void testRemoveCall(){
-        boolean bool = dbCaller.execute(new Request(userName, password, DbCalls.createUser));
+        boolean bool = dbCaller.execute(new Request(username, password, DbCalls.createUser));
         Assertions.assertTrue(bool);
 
-        bool = dbCaller.execute(new Request(userName, DbCalls.removeUser));
+        bool = dbCaller.execute(new Request(username, DbCalls.removeUser));
         Assertions.assertTrue(bool);
     }
 
     @Test
     public void testCreateCall(){
-        boolean bool = dbCaller.execute(new Request(userName, password, DbCalls.createUser));
+        boolean bool = dbCaller.execute(new Request(username, password, DbCalls.createUser));
         Assertions.assertTrue(bool);
 
-        bool = dbCaller.execute(new Request(userName, password, DbCalls.createUser));
+        bool = dbCaller.execute(new Request(username, password, DbCalls.createUser));
         Assertions.assertFalse(bool);
 
         bool = dbCaller.execute(new Request(null, password, DbCalls.createUser));
@@ -96,12 +94,19 @@ public class TestDBCalls {
 
     @Test
     public void testUpdateCall(){
-        //TODO: implement
+        boolean bool = dbCaller.execute(new Request(username, password, DbCalls.createUser));
+        Assertions.assertTrue(bool);
+
+        bool = dbCaller.execute(new Request(username, "new_"+password, DbCalls.authenticateUser));
+        Assertions.assertTrue(bool);
     }
 
     @Test
     public void testAuthenticateCall(){
-        //TODO: implement
-    }
+        boolean bool = dbCaller.execute(new Request(username, password, DbCalls.createUser));
+        Assertions.assertTrue(bool);
 
+        bool = dbCaller.execute(new Request(username, password, DbCalls.authenticateUser));
+        Assertions.assertTrue(bool);
+    }
 }
