@@ -25,7 +25,7 @@ public class TestDBCalls {
     @AfterEach
     public void cleanUp(){
         try (Connection con = DriverManager.getConnection(System.getenv("mockDbUrl"));
-             Statement statement = con.createStatement();
+             Statement statement = con.createStatement()
              ) {
             String drop = "DROP FROM Users";
             statement.executeUpdate(drop);
@@ -108,5 +108,14 @@ public class TestDBCalls {
 
         bool = dbCaller.execute(new Request(username, password, DbCalls.authenticateUser));
         Assertions.assertTrue(bool);
+    }
+
+    @Test
+    public void testCreateExistingUser(){
+        boolean bool = dbCaller.execute(new Request(username, password, DbCalls.createUser));
+        Assertions.assertTrue(bool);
+
+        bool = dbCaller.execute(new Request(username, password, DbCalls.createUser));
+        Assertions.assertFalse(bool);
     }
 }
