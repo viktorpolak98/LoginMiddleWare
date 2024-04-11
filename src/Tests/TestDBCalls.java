@@ -4,10 +4,12 @@ import Controller.CallerController;
 import Controller.DbCaller;
 import Model.DbCalls;
 import Model.Request;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +22,19 @@ public class TestDBCalls {
     @BeforeAll
     public static void setUp(){
         dbCaller = new DbCaller(System.getenv("mockDbUrl"));
+    }
+
+    @AfterEach
+    public void cleanUp(){
+        try (Connection con = DriverManager.getConnection(System.getenv("mockDbUrl"));
+             Statement statement = con.createStatement();
+             ) {
+            String drop = "DROP FROM Users";
+            statement.executeUpdate(drop);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
@@ -38,11 +53,6 @@ public class TestDBCalls {
     }
 
     @Test
-    public void testMultipleThreads(){
-        //TODO: implement
-    }
-
-    @Test
     public void testGetCall(){
         boolean bool = dbCaller.execute(new Request(userName, password, DbCalls.createUser));
         Assertions.assertTrue(bool);
@@ -56,7 +66,11 @@ public class TestDBCalls {
 
     @Test
     public void testRemoveCall(){
-        //TODO: implement
+        boolean bool = dbCaller.execute(new Request(userName, password, DbCalls.createUser));
+        Assertions.assertTrue(bool);
+
+        bool = dbCaller.execute(new Request(userName, DbCalls.removeUser));
+        Assertions.assertTrue(bool);
     }
 
     @Test

@@ -1,12 +1,13 @@
 package Tests;
 
 import Controller.CallerController;
+import Tests.Util.User;
+import Tests.Util.XMLTestdataReader;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -14,25 +15,50 @@ import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 public class TestEndPoints {
     private static String BASE_URL;
+    private static List<User> users;
 
     @BeforeAll
     public static void setUp(){
         new CallerController(System.getenv("mockDbUrl"), System.getenv("AllowedHostsConfig"));
         BASE_URL = System.getenv("TestUrl");
+        users = XMLTestdataReader.readUsers("..\\Testdata\\Testdata.xml");
     }
 
     @Test
     public void testCreateMultipleUsers(){
-        List<User> users = createUsers();
-        Vector<String> results = new Vector<>();
+        List<String> results = new ArrayList<>();
+        HttpURLConnection connection;
 
+
+        for (User user : users) {
+            String endpoint = String.format("/create-user/%s/%s", user.getUsername(), user.getPassword());
+            URL url = createUrl(endpoint);
+
+            Assumptions.assumeFalse(url == null);
+            Assumptions.assumeFalse(url.getPath().isBlank());
+
+            connection = createConnection(url, "POST");
+            Assumptions.assumeFalse(connection == null);
+
+            String response = "";
+
+            try {
+                connection.connect();
+                response = connection.getResponseMessage();
+                connection.disconnect();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            results.add(response);
+        }
 
         for (int i = 0; i < results.size(); i++) {
-            Assertions.assertEquals("HTTP/1.0 200 OK", results.get(i), "Assert failed on " + i);
+            Assertions.assertEquals("HTTP/1.0 200 OK", results.get(i),
+                    "Assert failed on " + i + ". With the response: " + results.get(i));
         }
     }
 
@@ -40,10 +66,8 @@ public class TestEndPoints {
     public void testCreateSingleUser(){
         HttpURLConnection connection;
 
-        //replace with Testdata.Testdata.xml later.
-        String username = "user1";
-        String password = "password";
-        String endpoint = String.format("/create-user/%s/%s", username, password);
+        User user = users.get(0);
+        String endpoint = String.format("/create-user/%s/%s", user.getUsername(), user.getPassword());
         URL url = createUrl(endpoint);
 
         Assumptions.assumeFalse(url == null);
@@ -62,8 +86,7 @@ public class TestEndPoints {
             e.printStackTrace();
         }
 
-        Assertions.assertFalse(response.isBlank(), "response was blank");
-        Assertions.assertEquals("HTTP/1.0 200 OK", response); //TODO: Replace with actual expected response
+        Assertions.assertEquals("HTTP/1.0 200 OK", response, "Actual response: " + response);
     }
 
     private HttpURLConnection createConnection(URL url, String requestMethod){
@@ -88,27 +111,5 @@ public class TestEndPoints {
             e.printStackTrace();
         }
         return url;
-    }
-
-    private List<User> createUsers(){
-        //TODO: implement reading from Testdata.xml and create users
-        return new ArrayList<>();
-    }
-
-    private class User{
-        String username;
-        String password;
-        public User(String username, String password){
-            this.username = username;
-            this.password = password;
-        }
-
-        public String getUsername() {
-            return username;
-        }
-
-        public String getPassword() {
-            return password;
-        }
     }
 }
