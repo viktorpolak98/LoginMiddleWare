@@ -3,16 +3,17 @@ package Tests;
 import Controller.CallerController;
 import Tests.Util.User;
 import Tests.Util.XMLTestdataReader;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Assumptions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +26,12 @@ public class TestEndPoints {
         new CallerController(System.getenv("mockDbUrl"), System.getenv("AllowedHostsConfig"));
         BASE_URL = System.getenv("TestUrl");
         users = XMLTestdataReader.readUsers("..\\Testdata\\Testdata.xml");
+        cleanUpDatabase();
+    }
+
+    @AfterEach
+    public void cleanUp(){
+        cleanUpDatabase();
     }
 
     @Test
@@ -111,5 +118,17 @@ public class TestEndPoints {
             e.printStackTrace();
         }
         return url;
+    }
+
+    private static void cleanUpDatabase(){
+        try (Connection con = DriverManager.getConnection(System.getenv("mockDbUrl"));
+             Statement statement = con.createStatement()
+        ) {
+            String drop = "DROP FROM Users";
+            statement.executeUpdate(drop);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

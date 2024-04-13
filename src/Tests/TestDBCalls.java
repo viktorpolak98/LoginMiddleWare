@@ -20,19 +20,12 @@ public class TestDBCalls {
     @BeforeAll
     public static void setUp(){
         dbCaller = new DbCaller(System.getenv("mockDbUrl"));
+        cleanUpDatabase();
     }
 
     @AfterEach
     public void cleanUp(){
-        try (Connection con = DriverManager.getConnection(System.getenv("mockDbUrl"));
-             Statement statement = con.createStatement()
-             ) {
-            String drop = "DROP FROM Users";
-            statement.executeUpdate(drop);
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        cleanUpDatabase();
     }
 
     @Test
@@ -117,5 +110,17 @@ public class TestDBCalls {
 
         bool = dbCaller.execute(new Request(username, password, DbCalls.createUser));
         Assertions.assertFalse(bool);
+    }
+
+    private static void cleanUpDatabase(){
+        try (Connection con = DriverManager.getConnection(System.getenv("mockDbUrl"));
+             Statement statement = con.createStatement()
+        ) {
+            String drop = "DROP FROM Users";
+            statement.executeUpdate(drop);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }
