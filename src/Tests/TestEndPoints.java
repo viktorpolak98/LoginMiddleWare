@@ -20,6 +20,7 @@ import java.util.List;
 public class TestEndPoints {
     private static String BASE_URL;
     private static List<User> users;
+    private HttpURLConnection connection;
 
     @BeforeAll
     public static void setUp(){
@@ -37,28 +38,13 @@ public class TestEndPoints {
     @Test
     public void testCreateMultipleUsers(){
         List<String> results = new ArrayList<>();
-        HttpURLConnection connection;
-
 
         for (User user : users) {
+            //Create every user from testdata
             String endpoint = String.format("/create-user/%s/%s", user.getUsername(), user.getPassword());
-            URL url = createUrl(endpoint);
+            setUpConnectionAndURL(endpoint, "POST");
 
-            Assumptions.assumeFalse(url == null);
-            Assumptions.assumeFalse(url.getPath().isBlank());
-
-            connection = createConnection(url, "POST");
-            Assumptions.assumeFalse(connection == null);
-
-            String response = "";
-
-            try {
-                connection.connect();
-                response = connection.getResponseMessage();
-                connection.disconnect();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            String response = makeConnection();
 
             results.add(response);
         }
@@ -71,20 +57,45 @@ public class TestEndPoints {
 
     @Test
     public void testCreateSingleUser(){
-        HttpURLConnection connection;
-
         User user = users.get(0);
         String endpoint = String.format("/create-user/%s/%s", user.getUsername(), user.getPassword());
-        URL url = createUrl(endpoint);
+        setUpConnectionAndURL(endpoint, "POST");
+
+        String response = makeConnection();
+
+        Assertions.assertEquals("HTTP/1.0 200 OK", response, "Actual response: " + response);
+    }
+
+    @Test
+    public void testRemoveSingleExistingUser(){
+        User user = users.get(0);
+        //Create user to be deleted
+        String endpoint = String.format("/create-user/%s/%s", user.getUsername(), user.getPassword());
+        setUpConnectionAndURL(endpoint, "POST");
+
+        String response = makeConnection();
+        Assertions.assertEquals("HTTP/1.0 200 OK", response, "Actual response: " + response);
+
+        //Remove created user
+        endpoint = String.format("/remove/%s", user.getUsername());
+        setUpConnectionAndURL(endpoint, "DELETE");
+
+        response = makeConnection();
+        Assertions.assertEquals("HTTP/1.0 200 OK", response, "Actual response: " + response);
+    }
+
+    private void setUpConnectionAndURL(String endpoint, String requestMethod){
+        URL url = createUrl(BASE_URL+endpoint);
 
         Assumptions.assumeFalse(url == null);
         Assumptions.assumeFalse(url.getPath().isBlank());
 
-        connection = createConnection(url, "POST");
+        connection = createConnection(url, requestMethod);
         Assumptions.assumeFalse(connection == null);
+    }
 
+    private String makeConnection(){
         String response = "";
-
         try {
             connection.connect();
             response = connection.getResponseMessage();
@@ -93,7 +104,7 @@ public class TestEndPoints {
             e.printStackTrace();
         }
 
-        Assertions.assertEquals("HTTP/1.0 200 OK", response, "Actual response: " + response);
+        return response;
     }
 
     private HttpURLConnection createConnection(URL url, String requestMethod){
