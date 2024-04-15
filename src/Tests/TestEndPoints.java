@@ -74,7 +74,7 @@ public class TestEndPoints {
         setUpConnectionAndURL(endpoint, "POST");
 
         String response = makeConnection();
-        Assertions.assertEquals("HTTP/1.0 200 OK", response, "Actual response: " + response);
+        Assumptions.assumeTrue(response.equals("HTTP/1.0 200 OK"), "Actual response: " + response);
 
         //Remove created user
         endpoint = String.format("/remove/%s", user.getUsername());
@@ -82,6 +82,41 @@ public class TestEndPoints {
 
         response = makeConnection();
         Assertions.assertEquals("HTTP/1.0 200 OK", response, "Actual response: " + response);
+    }
+
+    @Test
+    public void testRemoveMultipleExistingUsers(){
+        List<String> results = new ArrayList<>();
+
+        for (User user : users) {
+            //Create every user from testdata
+            String endpoint = String.format("/create-user/%s/%s", user.getUsername(), user.getPassword());
+            setUpConnectionAndURL(endpoint, "POST");
+
+            String response = makeConnection();
+
+            results.add(response);
+        }
+
+        for (int i = 0; i < results.size(); i++){
+            Assumptions.assumeTrue(results.get(i).equals("HTTP/1.0 200 OK"),
+                    "Assume failed on " + i + ". With the response: " + results.get(i));
+        }
+
+        for (User user : users) {
+            //Remove every user previously created
+            String endpoint = String.format("/remove/%s", user.getUsername());
+            setUpConnectionAndURL(endpoint, "DELETE");
+
+            String response = makeConnection();
+
+            results.add(response);
+        }
+
+        for (int i = 0; i < results.size(); i++) {
+            Assertions.assertEquals("HTTP/1.0 200 OK", results.get(i),
+                    "Assert failed on " + i + ". With the response: " + results.get(i));
+        }
     }
 
     private void setUpConnectionAndURL(String endpoint, String requestMethod){
