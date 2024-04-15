@@ -170,7 +170,7 @@ public class TestEndPoints {
         try (Connection con = DriverManager.getConnection(System.getenv("mockDbUrl"));
              Statement statement = con.createStatement()
         ) {
-            String drop = "DROP FROM Users";
+            String drop = "DROP FROM users";
             statement.executeUpdate(drop);
 
         } catch (SQLException e) {
