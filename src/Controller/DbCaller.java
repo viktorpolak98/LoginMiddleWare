@@ -7,9 +7,9 @@ import java.sql.*;
 public class DbCaller {
     private Connection con;
 
-    public DbCaller(String dbUrl){
+    public DbCaller(String dbUrl, String dbUser, String dbUserPassword){
         try {
-            con = DriverManager.getConnection(dbUrl);
+            con = DriverManager.getConnection(dbUrl, dbUser, dbUserPassword);
         } catch (SQLException e) {
             e.printStackTrace();
         }

@@ -24,7 +24,10 @@ public class TestEndPoints {
 
     @BeforeAll
     public static void setUp(){
-        new CallerController(System.getenv("mockDbUrl"), System.getenv("AllowedHostsConfig"));
+        new CallerController(System.getenv("AllowedHostsConfig"),
+                System.getenv("MockDbUrl"),
+                System.getenv("MockDbUser"),
+                System.getenv("MockDbUserPassword"));
         BASE_URL = System.getenv("TestUrl");
         users = XMLTestdataReader.readUsers("..\\Testdata\\Testdata.xml");
         cleanUpDatabase();

@@ -19,7 +19,9 @@ public class TestDBCalls {
 
     @BeforeAll
     public static void setUp(){
-        dbCaller = new DbCaller(System.getenv("mockDbUrl"));
+        dbCaller = new DbCaller(System.getenv("MockDbUrl"),
+                System.getenv("MockDbUser"),
+                System.getenv("MockDbUserPassword"));
         cleanUpDatabase();
     }
 

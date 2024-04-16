@@ -19,10 +19,10 @@ public class CallerController {
     private final ConfigurationController configurationController;
 
 
-    public CallerController(String dbUrl, String allowedHostsConfig){
+    public CallerController(String allowedHostsConfig, String dbUrl, String dbUser, String dbUserPassword){
         port(8080);
         configurationController = new ConfigurationController(allowedHostsConfig);
-        requestHandler = new RequestHandler(new DbCaller(dbUrl));
+        requestHandler = new RequestHandler(new DbCaller(dbUrl, dbUser, dbUserPassword));
         initRoutes();
     }
 
