@@ -70,6 +70,24 @@ public class TestEndPoints {
     }
 
     @Test
+    public void testGetSingleExistingUser() {
+        User user = users.get(0);
+        //Create user to be fetched
+        String endpoint = String.format("/create-user/%s/%s", user.getUsername(), user.getPassword());
+        setUpConnectionAndURL(endpoint, "POST");
+
+        String response = makeConnection();
+        Assumptions.assumeTrue(response.equals("HTTP/1.0 200 OK"), "Actual response: " + response);
+
+        //Get user
+        endpoint = String.format("/user/%s", user.getUsername());
+        setUpConnectionAndURL(endpoint, "GET");
+
+        response = makeConnection();
+        Assertions.assertEquals("HTTP/1.0 200 OK", response, "Actual response: " + response);
+    }
+
+    @Test
     public void testRemoveSingleExistingUser(){
         User user = users.get(0);
         //Create user to be deleted
