@@ -21,6 +21,7 @@ public class TestEndPoints {
     private static String BASE_URL;
     private static List<User> users;
     private HttpURLConnection connection;
+    private final String HTTP_200 =  "HTTP/1.0 200 OK";
 
     @BeforeAll
     public static void setUp(){
@@ -44,13 +45,13 @@ public class TestEndPoints {
 
         for (User user : users) {
             //Create every user from testdata
-            String response = setUpCreate(user);
+            String response = createUser(user.getUsername(), user.getPassword());
 
             results.add(response);
         }
 
         for (int i = 0; i < results.size(); i++) {
-            Assertions.assertEquals("HTTP/1.0 200 OK", results.get(i),
+            Assertions.assertEquals(HTTP_200, results.get(i),
                     "Assert failed on " + i + ". With the response: " + results.get(i));
         }
     }
@@ -58,33 +59,33 @@ public class TestEndPoints {
     @Test
     public void testCreateSingleUser(){
         User user = users.get(0);
-        String response = setUpCreate(user);
+        String response = createUser(user.getUsername(), user.getPassword());
 
-        Assertions.assertEquals("HTTP/1.0 200 OK", response, "Actual response: " + response);
+        Assertions.assertEquals(HTTP_200, response, "Actual response: " + response);
     }
 
     @Test
     public void testGetSingleExistingUser() {
         User user = users.get(0);
         //Create user to be fetched
-        String response = setUpCreate(user);
-        Assumptions.assumeTrue(response.equals("HTTP/1.0 200 OK"), "Actual response: " + response);
+        String response = createUser(user.getUsername(), user.getPassword());
+        Assumptions.assumeTrue(response.equals(HTTP_200), "Actual response: " + response);
 
         //Get user
-        response = setUpGet(user);
-        Assertions.assertEquals("HTTP/1.0 200 OK", response, "Actual response: " + response);
+        response = getUser(user.getUsername());
+        Assertions.assertEquals(HTTP_200, response, "Actual response: " + response);
     }
 
     @Test
     public void testRemoveSingleExistingUser(){
         User user = users.get(0);
         //Create user to be deleted
-        String response = setUpCreate(user);
-        Assumptions.assumeTrue(response.equals("HTTP/1.0 200 OK"), "Actual response: " + response);
+        String response = createUser(user.getUsername(), user.getPassword());
+        Assumptions.assumeTrue(response.equals(HTTP_200), "Actual response: " + response);
 
         //Remove created user
-        response = setUpRemove(user);
-        Assertions.assertEquals("HTTP/1.0 200 OK", response, "Actual response: " + response);
+        response = removeUser(user.getUsername());
+        Assertions.assertEquals(HTTP_200, response, "Actual response: " + response);
     }
 
     @Test
@@ -93,57 +94,68 @@ public class TestEndPoints {
 
         for (User user : users) {
             //Create every user from testdata
-            String response = setUpCreate(user);
+            String response = createUser(user.getUsername(), user.getPassword());
             results.add(response);
         }
 
         for (int i = 0; i < results.size(); i++){
-            Assumptions.assumeTrue(results.get(i).equals("HTTP/1.0 200 OK"),
+            Assumptions.assumeTrue(results.get(i).equals(HTTP_200),
                     "Assume failed on " + i + ". With the response: " + results.get(i));
         }
 
         for (User user : users) {
             //Remove every user previously created
-            String response = setUpRemove(user);
+            String response = removeUser(user.getUsername());
             results.add(response);
         }
 
         for (int i = 0; i < results.size(); i++) {
-            Assertions.assertEquals("HTTP/1.0 200 OK", results.get(i),
+            Assertions.assertEquals(HTTP_200, results.get(i),
                     "Assert failed on " + i + ". With the response: " + results.get(i));
         }
     }
 
-    private String setUpCreate(User user){
-        String endpoint = String.format("/create-user/%s/%s", user.getUsername(), user.getPassword());
+    @Test
+    public void testAuthenticateUser(){
+        User user = users.get(0);
+
+        String response = createUser(user.getUsername(), user.getPassword());
+        Assumptions.assumeTrue(response.equals(HTTP_200), "Actual response: " + response);
+
+        response = authenticateUser(user.getUsername(), user.getPassword());
+        Assertions.assertEquals(HTTP_200, response, "Actual response: " + response);
+    }
+
+    private String createUser(String username, String password){
+        String endpoint = String.format("/create-user/%s/%s", username, password);
         setUpConnectionAndURL(endpoint, "POST");
 
         return makeConnection();
     }
 
-    private String setUpRemove(User user){
-        String endpoint = String.format("/remove/%s", user.getUsername());
+    private String removeUser(String username){
+        String endpoint = String.format("/remove/%s", username);
         setUpConnectionAndURL(endpoint, "DELETE");
 
         return makeConnection();
     }
 
-    private String setUpGet(User user){
-        String endpoint = String.format("/user/%s", user.getUsername());
+    private String getUser(String username){
+        String endpoint = String.format("/user/%s", username);
         setUpConnectionAndURL(endpoint, "GET");
 
         return makeConnection();
     }
 
-    private String setUpAuthenticate(User user){
-        String endpoint = String.format("/authenticate/%s/%s", user.getUsername(), user.getPassword());
+    private String authenticateUser(String username, String password){
+        String endpoint = String.format("/authenticate/%s/%s", username, password);
         setUpConnectionAndURL(endpoint, "GET");
 
         return makeConnection();
     }
 
-    private String setUpUpdatePassword(User user){
-        String endpoint = String.format("/authenticate/%s/%s", user.getUsername(), user.getPassword());
+    private String updateUserPassword(String username, String password){
+        String endpoint = String.format("/authenticate/%s/%s", username, password);
         setUpConnectionAndURL(endpoint, "PATCH");
 
         return makeConnection();
