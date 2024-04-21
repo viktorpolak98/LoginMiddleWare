@@ -125,9 +125,10 @@ public class CallerController {
     private void setResHeader(boolean ok, Response res){
         if (ok){
             res.header(OK_STR, OK_CODE);
-        } else {
-            res.header(INTERNAL_SERVER_ERROR_STR, INTERNAL_SERVER_ERROR_CODE);
+            return;
         }
+
+        res.header(INTERNAL_SERVER_ERROR_STR, INTERNAL_SERVER_ERROR_CODE);
     }
 
     private boolean allowedHost(String caller){
