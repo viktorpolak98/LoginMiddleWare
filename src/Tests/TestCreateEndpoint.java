@@ -21,8 +21,7 @@ public class TestCreateEndpoint extends EndpointParent {
         }
 
         for (int i = 0; i < results.size(); i++) {
-            Assertions.assertEquals(getHTTP_200(), results.get(i),
-                    "Assert failed on " + i + ". With the response: " + results.get(i));
+            Assertions.assertEquals(getHTTP_200(), results.get(i));
         }
     }
 
@@ -31,6 +30,6 @@ public class TestCreateEndpoint extends EndpointParent {
         User user = getUsers().get(0);
         String response = getCalls().createUser(user.getUsername(), user.getPassword());
 
-        Assertions.assertEquals(getHTTP_200(), response, "Actual response: " + response);
+        Assertions.assertEquals(getHTTP_200(), response);
     }
 }

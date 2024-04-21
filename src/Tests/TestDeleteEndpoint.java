@@ -15,11 +15,11 @@ public class TestDeleteEndpoint extends EndpointParent {
         User user = getUsers().get(0);
         //Create user to be deleted
         String response = getCalls().createUser(user.getUsername(), user.getPassword());
-        Assumptions.assumeTrue(response.equals(getHTTP_200()), "Actual response: " + response);
+        Assumptions.assumeTrue(response.equals(getHTTP_200()));
 
         //Remove created user
         response = getCalls().removeUser(user.getUsername());
-        Assertions.assertEquals(getHTTP_200(), response, "Actual response: " + response);
+        Assertions.assertEquals(getHTTP_200(), response);
     }
 
     @Test
@@ -32,9 +32,8 @@ public class TestDeleteEndpoint extends EndpointParent {
             results.add(response);
         }
 
-        for (int i = 0; i < results.size(); i++){
-            Assumptions.assumeTrue(results.get(i).equals(getHTTP_200()),
-                    "Assume failed on " + i + ". With the response: " + results.get(i));
+        for (String result : results) {
+            Assumptions.assumeTrue(result.equals(getHTTP_200()));
         }
 
         for (User user : getUsers()) {
@@ -43,9 +42,15 @@ public class TestDeleteEndpoint extends EndpointParent {
             results.add(response);
         }
 
-        for (int i = 0; i < results.size(); i++) {
-            Assertions.assertEquals(getHTTP_200(), results.get(i),
-                    "Assert failed on " + i + ". With the response: " + results.get(i));
+        for (String result : results) {
+            Assertions.assertEquals(getHTTP_200(), result);
         }
     }
+
+    @Test
+    public void testRemoveBadRequest(){
+        String response = getCalls().removeUser("");
+        Assertions.assertEquals(getHTTP_400(), response);
+    }
+
 }

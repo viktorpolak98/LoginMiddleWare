@@ -10,9 +10,9 @@ public class TestAuthenticateEndpoint extends EndpointParent {
         User user = getUsers().get(0);
 
         String response = getCalls().createUser(user.getUsername(), user.getPassword());
-        Assumptions.assumeTrue(response.equals(getHTTP_200()), "Actual response: " + response);
+        Assumptions.assumeTrue(response.equals(getHTTP_200()));
 
         response = getCalls().authenticateUser(user.getUsername(), user.getPassword());
-        Assertions.assertEquals(getHTTP_200(), response, "Actual response: " + response);
+        Assertions.assertEquals(getHTTP_200(), response);
     }
 }

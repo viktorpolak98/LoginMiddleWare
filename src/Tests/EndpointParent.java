@@ -14,7 +14,6 @@ import java.util.List;
 
 public abstract class EndpointParent {
     private static List<User> users;
-    private final String HTTP_200 =  "HTTP/1.0 200 OK";
     private final Calls calls = new Calls();
 
     @BeforeAll
@@ -37,7 +36,11 @@ public abstract class EndpointParent {
     }
 
     protected String getHTTP_200() {
-        return HTTP_200;
+        return "HTTP/1.0 200 OK";
+    }
+
+    protected String getHTTP_400(){
+        return "HTTP/1.0 400 Bad request";
     }
 
     protected Calls getCalls() {
