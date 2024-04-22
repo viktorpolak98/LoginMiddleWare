@@ -51,6 +51,9 @@ public class TestDeleteEndpoint extends EndpointParent {
     public void testRemoveBadRequest(){
         String response = getCalls().removeUser("");
         Assertions.assertEquals(getHTTP_400(), response);
+
+        response = getCalls().removeUser(null);
+        Assertions.assertEquals(getHTTP_400(), response);
     }
 
 }

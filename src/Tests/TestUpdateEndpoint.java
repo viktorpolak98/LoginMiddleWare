@@ -16,4 +16,14 @@ public class TestUpdateEndpoint extends EndpointParent {
         response = getCalls().updateUserPassword(user.getUsername(), "New_password");
         Assertions.assertEquals(getHTTP_200(), response);
     }
+
+    @Test
+    public void testUpdatePasswordBadRequestNoPassword(){
+        User user = getUsers().get(0);
+        String response = getCalls().updateUserPassword(user.getUsername(), "");
+        Assertions.assertEquals(getHTTP_400(), response);
+
+        response = getCalls().updateUserPassword(user.getUsername(), null);
+        Assertions.assertEquals(getHTTP_400(), response);
+    }
 }
