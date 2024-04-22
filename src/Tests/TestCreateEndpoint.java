@@ -20,8 +20,8 @@ public class TestCreateEndpoint extends EndpointParent {
             results.add(response);
         }
 
-        for (int i = 0; i < results.size(); i++) {
-            Assertions.assertEquals(getHTTP_200(), results.get(i));
+        for (String result : results) {
+            Assertions.assertEquals(getHTTP_200(), result);
         }
     }
 
@@ -31,5 +31,15 @@ public class TestCreateEndpoint extends EndpointParent {
         String response = getCalls().createUser(user.getUsername(), user.getPassword());
 
         Assertions.assertEquals(getHTTP_200(), response);
+    }
+
+    @Test
+    public void testCreateUserBadRequestNoUsername(){
+        User user = getUsers().get(0);
+        String response = getCalls().createUser("", user.getPassword());
+        Assertions.assertEquals(getHTTP_400(), response);
+
+        response = getCalls().createUser(null, user.getPassword());
+        Assertions.assertEquals(getHTTP_400(), response);
     }
 }

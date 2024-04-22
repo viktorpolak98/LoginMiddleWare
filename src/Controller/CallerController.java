@@ -136,6 +136,9 @@ public class CallerController {
     }
 
     private boolean invalidCall(String... params){
+        if(params == null){
+            return true;
+        }
         for (String s : params) {
             if(s.isBlank()){
                 return true;
