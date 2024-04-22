@@ -26,4 +26,23 @@ public class TestUpdateEndpoint extends EndpointParent {
         response = getCalls().updateUserPassword(user.getUsername(), null);
         Assertions.assertEquals(getHTTP_400(), response);
     }
+
+    @Test
+    public void testUpdatePasswordBadRequestNoUsername(){
+        User user = getUsers().get(0);
+        String response = getCalls().updateUserPassword("", user.getPassword());
+        Assertions.assertEquals(getHTTP_400(), response);
+
+        response = getCalls().updateUserPassword(null, user.getPassword());
+        Assertions.assertEquals(getHTTP_400(), response);
+    }
+
+    @Test
+    public void testUpdatePasswordBadRequestNoParameters(){
+        String response = getCalls().updateUserPassword("", "");
+        Assertions.assertEquals(getHTTP_400(), response);
+
+        response = getCalls().updateUserPassword(null, null);
+        Assertions.assertEquals(getHTTP_400(), response);
+    }
 }
