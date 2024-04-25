@@ -1,14 +1,15 @@
 USE [UserDb]
 GO
 
-/****** Object:  StoredProcedure [dbo].[UpdatePassword]    Script Date: 2024-04-22 22:16:13 ******/
+/****** Object:  StoredProcedure [dbo].[UpdatePassword]    Script Date: 2024-04-25 19:30:00 ******/
 SET ANSI_NULLS ON
 GO
 
 SET QUOTED_IDENTIFIER ON
 GO
 
-CREATE procedure [dbo].[UpdatePassword] @Name nvarchar(255), @Password nvarchar(255)
+
+CREATE procedure [dbo].[UpdatePassword] @Username nvarchar(255), @Password nvarchar(255)
 As
     DECLARE @new_salt UNIQUEIDENTIFIER = NEWID();
     DECLARE @new_hash VARBINARY(64);
@@ -20,7 +21,7 @@ As
     UPDATE users
     SET Password = @new_hash,
         salt = @new_salt
-    WHERE Name = @Name;
+    WHERE Username = @Username;
 
 GO
 
