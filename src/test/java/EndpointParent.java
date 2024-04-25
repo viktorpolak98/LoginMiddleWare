@@ -1,8 +1,6 @@
-package Tests;
-
 import Controller.CallerController;
-import Tests.Util.User;
-import Tests.Util.XMLTestdataReader;
+import Util.User;
+import Util.XMLTestdataReader;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 

@@ -1,6 +1,4 @@
-package Tests;
-
-import Tests.Util.User;
+import Util.User;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;

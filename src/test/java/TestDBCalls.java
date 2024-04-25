@@ -1,5 +1,3 @@
-package Tests;
-
 import Controller.DbCaller;
 import Model.DbCalls;
 import Model.Request;

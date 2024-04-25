@@ -1,4 +1,4 @@
-package Tests.Util;
+package Util;
 
 
 public class User{

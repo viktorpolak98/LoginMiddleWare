@@ -1,5 +1,3 @@
-package Tests;
-
 import org.junit.jupiter.api.Assumptions;
 
 import java.io.IOException;

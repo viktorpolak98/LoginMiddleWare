@@ -1,6 +1,4 @@
-package Tests;
-
-import Tests.Util.User;
+import Util.User;
 import org.junit.jupiter.api.*;
 
 public class TestAuthenticateEndpoint extends EndpointParent {

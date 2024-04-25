@@ -1,4 +1,4 @@
-package Tests.Util;
+package Util;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
