@@ -1,5 +1,6 @@
 import Util.User;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -37,7 +38,34 @@ public class TestCreateEndpoint extends EndpointParent {
         String response = getCalls().createUser("", user.getPassword());
         Assertions.assertEquals(getHTTP_400(), response);
 
+        response = getCalls().createUser(" ", user.getPassword()); //Whitespace
+        Assertions.assertEquals(getHTTP_400(), response);
+
         response = getCalls().createUser(null, user.getPassword());
+        Assertions.assertEquals(getHTTP_400(), response);
+    }
+
+    @Test
+    public void testCreateUserBadRequestNoPassword(){
+        User user = getUsers().get(0);
+        String response = getCalls().createUser(user.getUsername(), "");
+        Assertions.assertEquals(getHTTP_400(), response);
+
+        response = getCalls().createUser(user.getUsername(), " "); //Whitespace
+        Assertions.assertEquals(getHTTP_400(), response);
+
+        response = getCalls().createUser(user.getUsername(), null);
+        Assertions.assertEquals(getHTTP_400(), response);
+    }
+
+    @Test
+    public void testCreateExistingUser() {
+        User user = getUsers().get(0);
+
+        String response = getCalls().createUser(user.getUsername(), user.getPassword());
+        Assumptions.assumeTrue(response.equals(getHTTP_200()));
+
+        response = getCalls().createUser(user.getUsername(), user.getPassword());
         Assertions.assertEquals(getHTTP_400(), response);
     }
 }

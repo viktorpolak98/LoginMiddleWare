@@ -16,4 +16,22 @@ public class TestGetEndpoint extends EndpointParent {
         response = getCalls().getUser(user.getUsername());
         Assertions.assertEquals(getHTTP_200(), response);
     }
+
+    @Test
+    public void testGetNonExistingUser() {
+        String response = getCalls().getUser("Non existent user");
+        Assertions.assertEquals(getHTTP_400(), response);
+    }
+
+    @Test
+    public void testGetBadParameter() {
+        String response = getCalls().getUser("");
+        Assertions.assertEquals(getHTTP_400(), response);
+
+        response = getCalls().getUser(" "); //Whitespace
+        Assertions.assertEquals(getHTTP_400(), response);
+
+        response = getCalls().getUser(null);
+        Assertions.assertEquals(getHTTP_400(), response);
+    }
 }

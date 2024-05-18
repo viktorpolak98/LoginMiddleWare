@@ -21,6 +21,9 @@ public class TestUpdateEndpoint extends EndpointParent {
         String response = getCalls().updateUserPassword(user.getUsername(), "");
         Assertions.assertEquals(getHTTP_400(), response);
 
+        response = getCalls().updateUserPassword(user.getUsername(), " "); //Whitespace
+        Assertions.assertEquals(getHTTP_400(), response);
+
         response = getCalls().updateUserPassword(user.getUsername(), null);
         Assertions.assertEquals(getHTTP_400(), response);
     }
@@ -31,6 +34,9 @@ public class TestUpdateEndpoint extends EndpointParent {
         String response = getCalls().updateUserPassword("", user.getPassword());
         Assertions.assertEquals(getHTTP_400(), response);
 
+        response = getCalls().updateUserPassword(" ", user.getPassword()); //Whitespace
+        Assertions.assertEquals(getHTTP_400(), response);
+
         response = getCalls().updateUserPassword(null, user.getPassword());
         Assertions.assertEquals(getHTTP_400(), response);
     }
@@ -38,6 +44,9 @@ public class TestUpdateEndpoint extends EndpointParent {
     @Test
     public void testUpdatePasswordBadRequestNoParameters(){
         String response = getCalls().updateUserPassword("", "");
+        Assertions.assertEquals(getHTTP_400(), response);
+
+        response = getCalls().updateUserPassword(" ", " "); //Whitespace
         Assertions.assertEquals(getHTTP_400(), response);
 
         response = getCalls().updateUserPassword(null, null);
