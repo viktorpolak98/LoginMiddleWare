@@ -53,6 +53,12 @@ public class TestDBCalls {
 
         bool = dbCaller.execute(new Request("non-existent user", DbCalls.getUser));
         Assertions.assertFalse(bool);
+
+        bool = dbCaller.execute(new Request("", DbCalls.getUser));
+        Assertions.assertFalse(bool);
+
+        bool = dbCaller.execute(new Request(" ", DbCalls.getUser));
+        Assertions.assertFalse(bool);
     }
 
     @Test
@@ -62,6 +68,15 @@ public class TestDBCalls {
 
         bool = dbCaller.execute(new Request(username, DbCalls.removeUser));
         Assertions.assertTrue(bool);
+
+        bool = dbCaller.execute(new Request("", DbCalls.removeUser));
+        Assertions.assertFalse(bool);
+
+        bool = dbCaller.execute(new Request(" ", DbCalls.removeUser));
+        Assertions.assertFalse(bool);
+
+        bool = dbCaller.execute(new Request("non-existent user", DbCalls.removeUser));
+        Assertions.assertFalse(bool);
     }
 
     @Test
@@ -69,13 +84,16 @@ public class TestDBCalls {
         boolean bool = dbCaller.execute(new Request(username, password, DbCalls.createUser));
         Assertions.assertTrue(bool);
 
-        bool = dbCaller.execute(new Request(username, password, DbCalls.createUser));
+        bool = dbCaller.execute(new Request(username, password, DbCalls.createUser)); //User exists
         Assertions.assertFalse(bool);
 
         bool = dbCaller.execute(new Request(null, password, DbCalls.createUser));
         Assertions.assertFalse(bool);
 
         bool = dbCaller.execute(new Request("", password, DbCalls.createUser));
+        Assertions.assertFalse(bool);
+
+        bool = dbCaller.execute(new Request(" ", password, DbCalls.createUser));
         Assertions.assertFalse(bool);
 
         bool = dbCaller.execute(new Request("user", null, DbCalls.createUser));
@@ -90,8 +108,26 @@ public class TestDBCalls {
         boolean bool = dbCaller.execute(new Request(username, password, DbCalls.createUser));
         Assertions.assertTrue(bool);
 
-        bool = dbCaller.execute(new Request(username, "new_"+password, DbCalls.authenticateUser));
+        bool = dbCaller.execute(new Request(username, "new_"+password, DbCalls.updatePassword));
         Assertions.assertTrue(bool);
+
+        bool = dbCaller.execute(new Request(username, "", DbCalls.updatePassword));
+        Assertions.assertFalse(bool);
+
+        bool = dbCaller.execute(new Request(username, " ", DbCalls.updatePassword));
+        Assertions.assertFalse(bool);
+
+        bool = dbCaller.execute(new Request("", password, DbCalls.updatePassword));
+        Assertions.assertFalse(bool);
+
+        bool = dbCaller.execute(new Request(" ", password, DbCalls.updatePassword));
+        Assertions.assertFalse(bool);
+
+        bool = dbCaller.execute(new Request("", "", DbCalls.updatePassword));
+        Assertions.assertFalse(bool);
+
+        bool = dbCaller.execute(new Request(" ", " ", DbCalls.updatePassword));
+        Assertions.assertFalse(bool);
     }
 
     @Test
@@ -101,6 +137,24 @@ public class TestDBCalls {
 
         bool = dbCaller.execute(new Request(username, password, DbCalls.authenticateUser));
         Assertions.assertTrue(bool);
+
+        bool = dbCaller.execute(new Request(username, "wrong password", DbCalls.authenticateUser));
+        Assertions.assertFalse(bool);
+
+        bool = dbCaller.execute(new Request("wrong user", password, DbCalls.authenticateUser));
+        Assertions.assertFalse(bool);
+
+        bool = dbCaller.execute(new Request(username, "", DbCalls.authenticateUser));
+        Assertions.assertFalse(bool);
+
+        bool = dbCaller.execute(new Request(username, " ", DbCalls.authenticateUser));
+        Assertions.assertFalse(bool);
+
+        bool = dbCaller.execute(new Request("", password, DbCalls.authenticateUser));
+        Assertions.assertFalse(bool);
+
+        bool = dbCaller.execute(new Request(" ", password, DbCalls.authenticateUser));
+        Assertions.assertFalse(bool);
     }
 
     @Test
@@ -109,6 +163,9 @@ public class TestDBCalls {
         Assertions.assertTrue(bool);
 
         bool = dbCaller.execute(new Request(username, password, DbCalls.createUser));
+        Assertions.assertFalse(bool);
+
+        bool = dbCaller.execute(new Request(username, "new_"+password, DbCalls.createUser));
         Assertions.assertFalse(bool);
     }
 
