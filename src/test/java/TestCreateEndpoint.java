@@ -9,7 +9,7 @@ import java.util.List;
 public class TestCreateEndpoint extends EndpointParent {
 
     @Test
-    public void testCreateMultipleUsers(){
+    public void testCreateMultipleUsers() {
         List<String> results = new ArrayList<>();
 
         for (User user : getUsers()) {
@@ -25,7 +25,7 @@ public class TestCreateEndpoint extends EndpointParent {
     }
 
     @Test
-    public void testCreateSingleUser(){
+    public void testCreateSingleUser() {
         User user = getUsers().get(0);
         String response = getCalls().createUser(user.getUsername(), user.getPassword());
 
@@ -33,7 +33,7 @@ public class TestCreateEndpoint extends EndpointParent {
     }
 
     @Test
-    public void testCreateUserBadRequestNoUsername(){
+    public void testCreateUserBadRequestNoUsername() {
         User user = getUsers().get(0);
         String response = getCalls().createUser("", user.getPassword());
         Assertions.assertEquals(getHTTP_400(), response);
@@ -46,7 +46,7 @@ public class TestCreateEndpoint extends EndpointParent {
     }
 
     @Test
-    public void testCreateUserBadRequestNoPassword(){
+    public void testCreateUserBadRequestNoPassword() {
         User user = getUsers().get(0);
         String response = getCalls().createUser(user.getUsername(), "");
         Assertions.assertEquals(getHTTP_400(), response);

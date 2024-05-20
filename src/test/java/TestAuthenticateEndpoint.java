@@ -4,7 +4,7 @@ import org.junit.jupiter.api.*;
 public class TestAuthenticateEndpoint extends EndpointParent {
 
     @Test
-    public void testAuthenticateUser(){
+    public void testAuthenticateUser() {
         User user = getUsers().get(0);
 
         String response = getCalls().createUser(user.getUsername(), user.getPassword());
@@ -15,7 +15,7 @@ public class TestAuthenticateEndpoint extends EndpointParent {
     }
 
     @Test
-    public void testAuthenticateUserBadRequest(){
+    public void testAuthenticateUserBadRequest() {
         User user = getUsers().get(0);
 
         String response = getCalls().createUser(user.getUsername(), user.getPassword());
@@ -26,7 +26,7 @@ public class TestAuthenticateEndpoint extends EndpointParent {
     }
 
     @Test
-    public void testAuthenticateUserExistingPasswordWrongUser(){
+    public void testAuthenticateUserExistingPasswordWrongUser() {
         User user1 = getUsers().get(0);
         User user2 = getUsers().get(1);
 
@@ -41,7 +41,7 @@ public class TestAuthenticateEndpoint extends EndpointParent {
     }
 
     @Test
-    public void testAuthenticateNonExistentUser(){
+    public void testAuthenticateNonExistentUser() {
         String response = getCalls().authenticateUser(null, null);
         Assertions.assertEquals(getHTTP_400(), response);
 
@@ -56,7 +56,7 @@ public class TestAuthenticateEndpoint extends EndpointParent {
     }
 
     @Test
-    public void testAuthenticateBadRequestNoParameter(){
+    public void testAuthenticateBadRequestNoParameter() {
         User user = getUsers().get(0);
 
         String response = getCalls().createUser(user.getUsername(), user.getPassword());

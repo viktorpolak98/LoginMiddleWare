@@ -9,7 +9,7 @@ import java.util.List;
 public class TestDeleteEndpoint extends EndpointParent {
 
     @Test
-    public void testRemoveSingleExistingUser(){
+    public void testRemoveSingleExistingUser() {
         User user = getUsers().get(0);
         //Create user to be deleted
         String response = getCalls().createUser(user.getUsername(), user.getPassword());
@@ -21,7 +21,7 @@ public class TestDeleteEndpoint extends EndpointParent {
     }
 
     @Test
-    public void testRemoveMultipleExistingUsers(){
+    public void testRemoveMultipleExistingUsers() {
         List<String> results = new ArrayList<>();
 
         for (User user : getUsers()) {
@@ -46,7 +46,7 @@ public class TestDeleteEndpoint extends EndpointParent {
     }
 
     @Test
-    public void testRemoveBadRequest(){
+    public void testRemoveBadRequest() {
         String response = getCalls().removeUser("");
         Assertions.assertEquals(getHTTP_400(), response);
 

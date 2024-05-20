@@ -15,7 +15,7 @@ public abstract class EndpointParent {
     private final Calls calls = new Calls();
 
     @BeforeAll
-    protected static void beforeTests(){
+    protected static void beforeTests() {
         new CallerController(System.getenv("AllowedHostsConfig"),
                 System.getenv("MockDbUrl"),
                 System.getenv("MockDbUser"),
@@ -25,7 +25,7 @@ public abstract class EndpointParent {
     }
 
     @AfterEach
-    protected void cleanUp(){
+    protected void cleanUp() {
         cleanUpDatabase();
     }
 
@@ -37,7 +37,7 @@ public abstract class EndpointParent {
         return "HTTP/1.0 200 OK";
     }
 
-    protected String getHTTP_400(){
+    protected String getHTTP_400() {
         return "HTTP/1.0 400 Bad request";
     }
 
@@ -45,7 +45,7 @@ public abstract class EndpointParent {
         return calls;
     }
 
-    protected static void cleanUpDatabase(){
+    protected static void cleanUpDatabase() {
         try (Connection con = DriverManager.getConnection(System.getenv("mockDbUrl"));
              Statement statement = con.createStatement()
         ) {
