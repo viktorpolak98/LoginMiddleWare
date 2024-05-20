@@ -7,7 +7,7 @@ import java.util.Properties;
 public class ConfigurationController {
     private final Properties prop = new Properties();
 
-    public ConfigurationController(String configPath){
+    public ConfigurationController(String configPath) {
         try (FileInputStream inputStream = new FileInputStream(configPath)) {
             prop.load(inputStream);
         } catch (IOException ex) {
@@ -15,7 +15,7 @@ public class ConfigurationController {
         }
     }
 
-    public boolean checkIfAllowedHost(String caller){
+    public boolean checkIfAllowedHost(String caller) {
         return prop.getProperty(caller) != null;
     }
 }

@@ -16,7 +16,7 @@ public class TestDBCalls {
     private static final String password = "password";
 
     @BeforeAll
-    public static void setUp(){
+    public static void setUp() {
         dbCaller = new DbCaller(System.getenv("MockDbUrl"),
                 System.getenv("MockDbUser"),
                 System.getenv("MockDbUserPassword"));
@@ -24,12 +24,12 @@ public class TestDBCalls {
     }
 
     @AfterEach
-    public void cleanUp(){
+    public void cleanUp() {
         cleanUpDatabase();
     }
 
     @Test
-    public void testAllCalls(){
+    public void testAllCalls() {
         List<Boolean> resultList = List.of(
                 dbCaller.execute(new Request(username, password, DbCalls.createUser)),
                 dbCaller.execute(new Request(username, password, DbCalls.authenticateUser)),
@@ -44,7 +44,7 @@ public class TestDBCalls {
     }
 
     @Test
-    public void testGetCall(){
+    public void testGetCall() {
         boolean bool = dbCaller.execute(new Request(username, password, DbCalls.createUser));
         Assertions.assertTrue(bool);
 
@@ -62,7 +62,7 @@ public class TestDBCalls {
     }
 
     @Test
-    public void testRemoveCall(){
+    public void testRemoveCall() {
         boolean bool = dbCaller.execute(new Request(username, password, DbCalls.createUser));
         Assertions.assertTrue(bool);
 
@@ -80,7 +80,7 @@ public class TestDBCalls {
     }
 
     @Test
-    public void testCreateCall(){
+    public void testCreateCall() {
         boolean bool = dbCaller.execute(new Request(username, password, DbCalls.createUser));
         Assertions.assertTrue(bool);
 
@@ -104,11 +104,11 @@ public class TestDBCalls {
     }
 
     @Test
-    public void testUpdateCall(){
+    public void testUpdateCall() {
         boolean bool = dbCaller.execute(new Request(username, password, DbCalls.createUser));
         Assertions.assertTrue(bool);
 
-        bool = dbCaller.execute(new Request(username, "new_"+password, DbCalls.updatePassword));
+        bool = dbCaller.execute(new Request(username, "new_" + password, DbCalls.updatePassword));
         Assertions.assertTrue(bool);
 
         bool = dbCaller.execute(new Request(username, "", DbCalls.updatePassword));
@@ -131,7 +131,7 @@ public class TestDBCalls {
     }
 
     @Test
-    public void testAuthenticateCall(){
+    public void testAuthenticateCall() {
         boolean bool = dbCaller.execute(new Request(username, password, DbCalls.createUser));
         Assertions.assertTrue(bool);
 
@@ -158,18 +158,18 @@ public class TestDBCalls {
     }
 
     @Test
-    public void testCreateExistingUser(){
+    public void testCreateExistingUser() {
         boolean bool = dbCaller.execute(new Request(username, password, DbCalls.createUser));
         Assertions.assertTrue(bool);
 
         bool = dbCaller.execute(new Request(username, password, DbCalls.createUser));
         Assertions.assertFalse(bool);
 
-        bool = dbCaller.execute(new Request(username, "new_"+password, DbCalls.createUser));
+        bool = dbCaller.execute(new Request(username, "new_" + password, DbCalls.createUser));
         Assertions.assertFalse(bool);
     }
 
-    private static void cleanUpDatabase(){
+    private static void cleanUpDatabase() {
         try (Connection con = DriverManager.getConnection(System.getenv("mockDbUrl"));
              Statement statement = con.createStatement()
         ) {

@@ -7,7 +7,7 @@ import java.sql.*;
 public class DbCaller {
     private Connection con;
 
-    public DbCaller(String dbUrl, String dbUser, String dbUserPassword){
+    public DbCaller(String dbUrl, String dbUser, String dbUserPassword) {
         try {
             con = DriverManager.getConnection(dbUrl, dbUser, dbUserPassword);
         } catch (SQLException e) {
@@ -19,8 +19,8 @@ public class DbCaller {
         return con.isValid(5000);
     }
 
-    public synchronized boolean execute(Request request){
-        switch (request.getCall()){
+    public synchronized boolean execute(Request request) {
+        switch (request.getCall()) {
             case createUser -> {
                 return createUser(request.getUsername(), request.getPassword());
             }
@@ -45,9 +45,8 @@ public class DbCaller {
     }
 
 
-
     private boolean createUser(String username, String password) {
-        try(CallableStatement statement = con.prepareCall("{call CreateUser(?,?)}")){
+        try (CallableStatement statement = con.prepareCall("{call CreateUser(?,?)}")) {
             statement.setString(1, username);
             statement.setString(2, password);
 
@@ -57,48 +56,48 @@ public class DbCaller {
             userExists.setString(1, username);
 
             return userExists.execute();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
     }
 
     private boolean removeUser(String username) {
-        try(CallableStatement statement = con.prepareCall("{call DeleteUser(?)}")){
+        try (CallableStatement statement = con.prepareCall("{call DeleteUser(?)}")) {
             statement.setString(1, username);
 
             return statement.execute();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
     }
 
     private boolean updatePassword(String username, String password) {
-        try(CallableStatement statement = con.prepareCall("{call UpdatePassword(?,?)}")){
+        try (CallableStatement statement = con.prepareCall("{call UpdatePassword(?,?)}")) {
             statement.setString(1, username);
             statement.setString(2, password);
 
             return statement.execute();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
     }
 
     private boolean userExists(String username) {
-        try(CallableStatement statement = con.prepareCall("{call GetUser(?)}")){
+        try (CallableStatement statement = con.prepareCall("{call GetUser(?)}")) {
             statement.setString(1, username);
 
             return statement.execute();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
     }
 
     private boolean authenticate(String username, String password) {
-        try(CallableStatement statement = con.prepareCall("{call AuthenticateUser(?,?,?)}")){
+        try (CallableStatement statement = con.prepareCall("{call AuthenticateUser(?,?,?)}")) {
             statement.setString(1, username);
             statement.setString(2, password);
             statement.registerOutParameter(3, Types.BIT);
@@ -106,7 +105,7 @@ public class DbCaller {
             statement.execute();
 
             return statement.getBoolean(3);
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }

@@ -19,7 +19,7 @@ public class CallerController {
     private final ConfigurationController configurationController;
 
 
-    public CallerController(String allowedHostsConfig, String dbUrl, String dbUser, String dbUserPassword){
+    public CallerController(String allowedHostsConfig, String dbUrl, String dbUser, String dbUserPassword) {
         port(8080);
         configurationController = new ConfigurationController(allowedHostsConfig);
         requestHandler = new RequestHandler(new DbCaller(dbUrl, dbUser, dbUserPassword));
@@ -46,7 +46,7 @@ public class CallerController {
         );
 
         before((request, response) -> {
-            if (!allowedHost(request.host())){
+            if (!allowedHost(request.host())) {
                 response.header(BAD_REQUEST_STR, FORBIDDEN_HOST_CODE);
             }
             response.header("Access-Control-Allow-Origin", "*");
@@ -54,7 +54,7 @@ public class CallerController {
 
 
         patch("/update-password/:username/:password", (req, res) -> {
-            if (invalidCall(req.params(":username"), req.params(":password"))){
+            if (invalidCall(req.params(":username"), req.params(":password"))) {
                 res.header(BAD_REQUEST_STR, BAD_REQUEST_CODE);
                 return res;
             }
@@ -67,7 +67,7 @@ public class CallerController {
         });
 
         delete("/remove/:username", (req, res) -> {
-            if (invalidCall(req.params(":username"))){
+            if (invalidCall(req.params(":username"))) {
                 res.header(BAD_REQUEST_STR, BAD_REQUEST_CODE);
                 return res;
             }
@@ -80,7 +80,7 @@ public class CallerController {
         });
 
         post("/create-user/:username/:password", (req, res) -> {
-            if(invalidCall(req.params(":username"), req.params(":password"))){
+            if (invalidCall(req.params(":username"), req.params(":password"))) {
                 res.header(BAD_REQUEST_STR, BAD_REQUEST_CODE);
                 return res;
             }
@@ -94,7 +94,7 @@ public class CallerController {
         });
 
         get("/authenticate/:username/:password/", (req, res) -> {
-            if(invalidCall(req.params(":username"), req.params(":password"))){
+            if (invalidCall(req.params(":username"), req.params(":password"))) {
                 res.header(BAD_REQUEST_STR, BAD_REQUEST_CODE);
                 return res;
             }
@@ -108,7 +108,7 @@ public class CallerController {
         });
 
         get("/user/:username", (req, res) -> {
-            if(invalidCall(req.params(":username"))){
+            if (invalidCall(req.params(":username"))) {
                 res.header(BAD_REQUEST_STR, BAD_REQUEST_CODE);
                 return res;
             }
@@ -122,8 +122,8 @@ public class CallerController {
         });
     }
 
-    private void setResHeader(boolean ok, Response res){
-        if (ok){
+    private void setResHeader(boolean ok, Response res) {
+        if (ok) {
             res.header(OK_STR, OK_CODE);
             return;
         }
@@ -131,16 +131,16 @@ public class CallerController {
         res.header(INTERNAL_SERVER_ERROR_STR, INTERNAL_SERVER_ERROR_CODE);
     }
 
-    private boolean allowedHost(String caller){
+    private boolean allowedHost(String caller) {
         return configurationController.checkIfAllowedHost(caller);
     }
 
-    private boolean invalidCall(String... params){
-        if(params == null){
+    private boolean invalidCall(String... params) {
+        if (params == null) {
             return true;
         }
         for (String s : params) {
-            if(s.isBlank()){
+            if (s.isBlank()) {
                 return true;
             }
         }

@@ -10,28 +10,29 @@ public class RequestHandler {
     private final ExecutorService executorService = Executors.newCachedThreadPool();
     private boolean connected = true;
 
-    public RequestHandler(DbCaller dbCaller){
+    public RequestHandler(DbCaller dbCaller) {
         this.dbCaller = dbCaller;
         checkConnection();
     }
 
-    public Boolean performRequest(Request request){
-        if (!connected){
+    public Boolean performRequest(Request request) {
+        if (!connected) {
             return false;
         }
         try {
             return executorService.submit(() -> dbCaller.execute(request)).get();
-        } catch (InterruptedException | ExecutionException e){
+        } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
             return false;
         }
     }
-    private void checkConnection(){
+
+    private void checkConnection() {
         new Thread(() -> {
-            while(connected){
+            while (connected) {
                 try {
                     connected = dbCaller.isConnected();
-                } catch (SQLException e ) {
+                } catch (SQLException e) {
                     e.printStackTrace();
                     connected = false;
                 }
