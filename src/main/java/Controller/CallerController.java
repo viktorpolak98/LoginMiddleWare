@@ -2,19 +2,16 @@ package Controller;
 
 import Model.DbCalls;
 import Model.Request;
+import Model.Status;
 import spark.Response;
-import spark.Route;
 
 import static spark.Spark.*;
 
 public class CallerController {
-    private final int INTERNAL_SERVER_ERROR_CODE = 500;
     private final int BAD_REQUEST_CODE = 400;
     private final int FORBIDDEN_HOST_CODE = 401;
-    private final int OK_CODE = 200;
-    private final String INTERNAL_SERVER_ERROR_STR = "Request failed due to internal server error";
     private final String BAD_REQUEST_STR = "Bad request";
-    private final String OK_STR = "OK";
+    private final String FORBIDDEN_HOST_STR = "Unauthorized";
     private final RequestHandler requestHandler;
     private final ConfigurationController configurationController;
 
@@ -47,7 +44,7 @@ public class CallerController {
 
         before((request, response) -> {
             if (!allowedHost(request.host())) {
-                response.header(BAD_REQUEST_STR, FORBIDDEN_HOST_CODE);
+                response.header(FORBIDDEN_HOST_STR, FORBIDDEN_HOST_CODE);
             }
             response.header("Access-Control-Allow-Origin", "*");
         });
@@ -58,7 +55,7 @@ public class CallerController {
                 res.header(BAD_REQUEST_STR, BAD_REQUEST_CODE);
                 return res;
             }
-            boolean requestStatus = requestHandler.
+            Status requestStatus = requestHandler.
                     performRequest(new Request(req.params(":username"), req.params(":password"), DbCalls.updatePassword));
 
             setResHeader(requestStatus, res);
@@ -71,7 +68,7 @@ public class CallerController {
                 res.header(BAD_REQUEST_STR, BAD_REQUEST_CODE);
                 return res;
             }
-            boolean requestStatus = requestHandler.
+            Status requestStatus = requestHandler.
                     performRequest(new Request(req.params(":username"), DbCalls.removeUser));
 
             setResHeader(requestStatus, res);
@@ -85,7 +82,7 @@ public class CallerController {
                 return res;
             }
 
-            boolean requestStatus = requestHandler.
+            Status requestStatus = requestHandler.
                     performRequest(new Request(req.params(":username"), req.params(":password"), DbCalls.createUser));
 
             setResHeader(requestStatus, res);
@@ -99,7 +96,7 @@ public class CallerController {
                 return res;
             }
 
-            boolean requestStatus = requestHandler.
+            Status requestStatus = requestHandler.
                     performRequest(new Request(req.params(":username"), req.params(":password"), DbCalls.authenticateUser));
 
             setResHeader(requestStatus, res);
@@ -113,7 +110,7 @@ public class CallerController {
                 return res;
             }
 
-            boolean requestStatus = requestHandler.
+            Status requestStatus = requestHandler.
                     performRequest(new Request(req.params(":username"), DbCalls.getUser));
 
             setResHeader(requestStatus, res);
@@ -122,13 +119,22 @@ public class CallerController {
         });
     }
 
-    private void setResHeader(boolean ok, Response res) {
-        if (ok) {
-            res.header(OK_STR, OK_CODE);
-            return;
-        }
+    private void setResHeader(Status status, Response res) {
+        String INTERNAL_SERVER_ERROR_STR = "Request failed due to internal server error";
+        int INTERNAL_SERVER_ERROR_CODE = 500;
 
-        res.header(INTERNAL_SERVER_ERROR_STR, INTERNAL_SERVER_ERROR_CODE);
+        String OK_STR = "OK";
+        int OK_CODE = 200;
+
+        String NOT_FOUND_STR = "Not found";
+        int NOT_FOUND_CODE = 404;
+
+        switch (status){
+            case INTERNAL_SERVER_ERROR -> res.header(INTERNAL_SERVER_ERROR_STR, INTERNAL_SERVER_ERROR_CODE);
+            case BAD_REQUEST -> res.header(BAD_REQUEST_STR, BAD_REQUEST_CODE);
+            case NOT_FOUND -> res.header(NOT_FOUND_STR, NOT_FOUND_CODE);
+            case OK -> res.header(OK_STR, OK_CODE);
+        }
     }
 
     private boolean allowedHost(String caller) {

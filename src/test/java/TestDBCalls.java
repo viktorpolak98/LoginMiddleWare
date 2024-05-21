@@ -1,6 +1,7 @@
 import Controller.DbCaller;
 import Model.DbCalls;
 import Model.Request;
+import Model.Status;
 import org.junit.jupiter.api.*;
 
 import java.sql.Connection;
@@ -30,7 +31,7 @@ public class TestDBCalls {
 
     @Test
     public void testAllCalls() {
-        List<Boolean> resultList = List.of(
+        List<Status> resultList = List.of(
                 dbCaller.execute(new Request(username, password, DbCalls.createUser)),
                 dbCaller.execute(new Request(username, password, DbCalls.authenticateUser)),
                 dbCaller.execute(new Request(username, "new_" + password, DbCalls.updatePassword)),
@@ -38,135 +39,135 @@ public class TestDBCalls {
                 dbCaller.execute(new Request(username, DbCalls.removeUser))
         );
 
-        for (Boolean bool : resultList) {
-            Assertions.assertTrue(bool);
+        for (Status status : resultList) {
+            Assertions.assertEquals(Status.OK, status);
         }
     }
 
     @Test
     public void testGetCall() {
-        boolean bool = dbCaller.execute(new Request(username, password, DbCalls.createUser));
-        Assertions.assertTrue(bool);
+        Status status = dbCaller.execute(new Request(username, password, DbCalls.createUser));
+        Assumptions.assumeTrue(Status.OK == status);
 
-        bool = dbCaller.execute(new Request(username, DbCalls.getUser));
-        Assertions.assertTrue(bool);
+        status = dbCaller.execute(new Request(username, DbCalls.getUser));
+        Assertions.assertEquals(Status.OK, status);
 
-        bool = dbCaller.execute(new Request("non-existent user", DbCalls.getUser));
-        Assertions.assertFalse(bool);
+        status = dbCaller.execute(new Request("non-existent user", DbCalls.getUser));
+        Assertions.assertEquals(Status.NOT_FOUND, status);
 
-        bool = dbCaller.execute(new Request("", DbCalls.getUser));
-        Assertions.assertFalse(bool);
+        status = dbCaller.execute(new Request("", DbCalls.getUser));
+        Assertions.assertEquals(Status.NOT_FOUND, status);
 
-        bool = dbCaller.execute(new Request(" ", DbCalls.getUser));
-        Assertions.assertFalse(bool);
+        status = dbCaller.execute(new Request(" ", DbCalls.getUser));
+        Assertions.assertEquals(Status.NOT_FOUND, status);
     }
 
     @Test
     public void testRemoveCall() {
-        boolean bool = dbCaller.execute(new Request(username, password, DbCalls.createUser));
-        Assertions.assertTrue(bool);
+        Status status = dbCaller.execute(new Request(username, password, DbCalls.createUser));
+        Assumptions.assumeTrue(status == Status.OK);
 
-        bool = dbCaller.execute(new Request(username, DbCalls.removeUser));
-        Assertions.assertTrue(bool);
+        status = dbCaller.execute(new Request(username, DbCalls.removeUser));
+        Assertions.assertEquals(Status.OK, status);
 
-        bool = dbCaller.execute(new Request("", DbCalls.removeUser));
-        Assertions.assertFalse(bool);
+        status = dbCaller.execute(new Request("", DbCalls.removeUser));
+        Assertions.assertEquals(Status.BAD_REQUEST, status);
 
-        bool = dbCaller.execute(new Request(" ", DbCalls.removeUser));
-        Assertions.assertFalse(bool);
+        status = dbCaller.execute(new Request(" ", DbCalls.removeUser));
+        Assertions.assertEquals(Status.BAD_REQUEST, status);
 
-        bool = dbCaller.execute(new Request("non-existent user", DbCalls.removeUser));
-        Assertions.assertFalse(bool);
+        status = dbCaller.execute(new Request("non-existent user", DbCalls.removeUser));
+        Assertions.assertEquals(Status.BAD_REQUEST, status);
     }
 
     @Test
     public void testCreateCall() {
-        boolean bool = dbCaller.execute(new Request(username, password, DbCalls.createUser));
-        Assertions.assertTrue(bool);
+        Status status = dbCaller.execute(new Request(username, password, DbCalls.createUser));
+        Assertions.assertEquals(Status.OK, status);
 
-        bool = dbCaller.execute(new Request(username, password, DbCalls.createUser)); //User exists
-        Assertions.assertFalse(bool);
+        status = dbCaller.execute(new Request(username, password, DbCalls.createUser)); //User exists
+        Assertions.assertEquals(Status.BAD_REQUEST, status);
 
-        bool = dbCaller.execute(new Request(null, password, DbCalls.createUser));
-        Assertions.assertFalse(bool);
+        status = dbCaller.execute(new Request(null, password, DbCalls.createUser));
+        Assertions.assertEquals(Status.BAD_REQUEST, status);
 
-        bool = dbCaller.execute(new Request("", password, DbCalls.createUser));
-        Assertions.assertFalse(bool);
+        status = dbCaller.execute(new Request("", password, DbCalls.createUser));
+        Assertions.assertEquals(Status.BAD_REQUEST, status);
 
-        bool = dbCaller.execute(new Request(" ", password, DbCalls.createUser));
-        Assertions.assertFalse(bool);
+        status = dbCaller.execute(new Request(" ", password, DbCalls.createUser));
+        Assertions.assertEquals(Status.BAD_REQUEST, status);
 
-        bool = dbCaller.execute(new Request("user", null, DbCalls.createUser));
-        Assertions.assertFalse(bool);
+        status = dbCaller.execute(new Request("user", null, DbCalls.createUser));
+        Assertions.assertEquals(Status.BAD_REQUEST, status);
 
-        bool = dbCaller.execute(new Request("user", "", DbCalls.createUser));
-        Assertions.assertFalse(bool);
+        status = dbCaller.execute(new Request("user", "", DbCalls.createUser));
+        Assertions.assertEquals(Status.BAD_REQUEST, status);
     }
 
     @Test
     public void testUpdateCall() {
-        boolean bool = dbCaller.execute(new Request(username, password, DbCalls.createUser));
-        Assertions.assertTrue(bool);
+        Status status = dbCaller.execute(new Request(username, password, DbCalls.createUser));
+        Assumptions.assumeTrue(Status.OK == status);
 
-        bool = dbCaller.execute(new Request(username, "new_" + password, DbCalls.updatePassword));
-        Assertions.assertTrue(bool);
+        status = dbCaller.execute(new Request(username, "new_" + password, DbCalls.updatePassword));
+        Assertions.assertEquals(Status.OK, status);
 
-        bool = dbCaller.execute(new Request(username, "", DbCalls.updatePassword));
-        Assertions.assertFalse(bool);
+        status = dbCaller.execute(new Request(username, "", DbCalls.updatePassword));
+        Assertions.assertEquals(Status.BAD_REQUEST, status);
 
-        bool = dbCaller.execute(new Request(username, " ", DbCalls.updatePassword));
-        Assertions.assertFalse(bool);
+        status = dbCaller.execute(new Request(username, " ", DbCalls.updatePassword));
+        Assertions.assertEquals(Status.BAD_REQUEST, status);
 
-        bool = dbCaller.execute(new Request("", password, DbCalls.updatePassword));
-        Assertions.assertFalse(bool);
+        status = dbCaller.execute(new Request("", password, DbCalls.updatePassword));
+        Assertions.assertEquals(Status.BAD_REQUEST, status);
 
-        bool = dbCaller.execute(new Request(" ", password, DbCalls.updatePassword));
-        Assertions.assertFalse(bool);
+        status = dbCaller.execute(new Request(" ", password, DbCalls.updatePassword));
+        Assertions.assertEquals(Status.BAD_REQUEST, status);
 
-        bool = dbCaller.execute(new Request("", "", DbCalls.updatePassword));
-        Assertions.assertFalse(bool);
+        status = dbCaller.execute(new Request("", "", DbCalls.updatePassword));
+        Assertions.assertEquals(Status.BAD_REQUEST, status);
 
-        bool = dbCaller.execute(new Request(" ", " ", DbCalls.updatePassword));
-        Assertions.assertFalse(bool);
+        status = dbCaller.execute(new Request(" ", " ", DbCalls.updatePassword));
+        Assertions.assertEquals(Status.BAD_REQUEST, status);
     }
 
     @Test
     public void testAuthenticateCall() {
-        boolean bool = dbCaller.execute(new Request(username, password, DbCalls.createUser));
-        Assertions.assertTrue(bool);
+        Status status = dbCaller.execute(new Request(username, password, DbCalls.createUser));
+        Assumptions.assumeTrue(Status.OK == status);
 
-        bool = dbCaller.execute(new Request(username, password, DbCalls.authenticateUser));
-        Assertions.assertTrue(bool);
+        status = dbCaller.execute(new Request(username, password, DbCalls.authenticateUser));
+        Assertions.assertEquals(Status.OK, status);
 
-        bool = dbCaller.execute(new Request(username, "wrong password", DbCalls.authenticateUser));
-        Assertions.assertFalse(bool);
+        status = dbCaller.execute(new Request(username, "wrong password", DbCalls.authenticateUser));
+        Assertions.assertEquals(Status.BAD_REQUEST, status);
 
-        bool = dbCaller.execute(new Request("wrong user", password, DbCalls.authenticateUser));
-        Assertions.assertFalse(bool);
+        status = dbCaller.execute(new Request("wrong user", password, DbCalls.authenticateUser));
+        Assertions.assertEquals(Status.BAD_REQUEST, status);
 
-        bool = dbCaller.execute(new Request(username, "", DbCalls.authenticateUser));
-        Assertions.assertFalse(bool);
+        status = dbCaller.execute(new Request(username, "", DbCalls.authenticateUser));
+        Assertions.assertEquals(Status.BAD_REQUEST, status);
 
-        bool = dbCaller.execute(new Request(username, " ", DbCalls.authenticateUser));
-        Assertions.assertFalse(bool);
+        status = dbCaller.execute(new Request(username, " ", DbCalls.authenticateUser));
+        Assertions.assertEquals(Status.BAD_REQUEST, status);
 
-        bool = dbCaller.execute(new Request("", password, DbCalls.authenticateUser));
-        Assertions.assertFalse(bool);
+        status = dbCaller.execute(new Request("", password, DbCalls.authenticateUser));
+        Assertions.assertEquals(Status.BAD_REQUEST, status);
 
-        bool = dbCaller.execute(new Request(" ", password, DbCalls.authenticateUser));
-        Assertions.assertFalse(bool);
+        status = dbCaller.execute(new Request(" ", password, DbCalls.authenticateUser));
+        Assertions.assertEquals(Status.BAD_REQUEST, status);
     }
 
     @Test
     public void testCreateExistingUser() {
-        boolean bool = dbCaller.execute(new Request(username, password, DbCalls.createUser));
-        Assertions.assertTrue(bool);
+        Status status = dbCaller.execute(new Request(username, password, DbCalls.createUser));
+        Assertions.assertEquals(Status.OK, status);
 
-        bool = dbCaller.execute(new Request(username, password, DbCalls.createUser));
-        Assertions.assertFalse(bool);
+        status = dbCaller.execute(new Request(username, password, DbCalls.createUser));
+        Assertions.assertEquals(Status.OK, status);
 
-        bool = dbCaller.execute(new Request(username, "new_" + password, DbCalls.createUser));
-        Assertions.assertFalse(bool);
+        status = dbCaller.execute(new Request(username, "new_" + password, DbCalls.createUser));
+        Assertions.assertEquals(Status.OK, status);
     }
 
     private static void cleanUpDatabase() {

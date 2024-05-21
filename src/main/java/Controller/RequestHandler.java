@@ -1,6 +1,7 @@
 package Controller;
 
 import Model.Request;
+import Model.Status;
 
 import java.sql.SQLException;
 import java.util.concurrent.*;
@@ -15,15 +16,15 @@ public class RequestHandler {
         checkConnection();
     }
 
-    public Boolean performRequest(Request request) {
+    public Status performRequest(Request request) {
         if (!connected) {
-            return false;
+            return Status.INTERNAL_SERVER_ERROR;
         }
         try {
             return executorService.submit(() -> dbCaller.execute(request)).get();
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
-            return false;
+            return Status.INTERNAL_SERVER_ERROR;
         }
     }
 

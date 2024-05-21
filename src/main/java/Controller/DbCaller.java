@@ -1,6 +1,7 @@
 package Controller;
 
 import Model.Request;
+import Model.Status;
 
 import java.sql.*;
 
@@ -19,7 +20,7 @@ public class DbCaller {
         return con.isValid(5000);
     }
 
-    public synchronized boolean execute(Request request) {
+    public synchronized Status execute(Request request) {
         switch (request.getCall()) {
             case createUser -> {
                 return createUser(request.getUsername(), request.getPassword());
@@ -41,11 +42,12 @@ public class DbCaller {
                 return authenticate(request.getUsername(), request.getPassword());
             }
         }
-        return false;
+
+        return Status.BAD_REQUEST;
     }
 
 
-    private boolean createUser(String username, String password) {
+    private Status createUser(String username, String password) {
         try (CallableStatement statement = con.prepareCall("{call CreateUser(?,?)}")) {
             statement.setString(1, username);
             statement.setString(2, password);
@@ -55,48 +57,69 @@ public class DbCaller {
             CallableStatement userExists = con.prepareCall("{call GetUser(?)}");
             userExists.setString(1, username);
 
-            return userExists.execute();
+            if (!userExists.execute()) {
+
+                return Status.BAD_REQUEST;
+            }
+
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
+            return Status.INTERNAL_SERVER_ERROR;
         }
+
+        return Status.OK;
     }
 
-    private boolean removeUser(String username) {
+    private Status removeUser(String username) {
         try (CallableStatement statement = con.prepareCall("{call DeleteUser(?)}")) {
             statement.setString(1, username);
 
-            return statement.execute();
+            if (!statement.execute()) {
+                return Status.BAD_REQUEST;
+            }
+
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
+            return Status.INTERNAL_SERVER_ERROR;
         }
+
+        return Status.OK;
     }
 
-    private boolean updatePassword(String username, String password) {
+    private Status updatePassword(String username, String password) {
         try (CallableStatement statement = con.prepareCall("{call UpdatePassword(?,?)}")) {
             statement.setString(1, username);
             statement.setString(2, password);
 
-            return statement.execute();
+            if (!statement.execute()) {
+                return Status.BAD_REQUEST;
+            }
+
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
+            return Status.INTERNAL_SERVER_ERROR;
         }
+
+        return Status.OK;
     }
 
-    private boolean userExists(String username) {
+    private Status userExists(String username) {
         try (CallableStatement statement = con.prepareCall("{call GetUser(?)}")) {
             statement.setString(1, username);
 
-            return statement.execute();
+            if (!statement.execute()) {
+                return Status.NOT_FOUND;
+            }
+
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
+            return Status.INTERNAL_SERVER_ERROR;
         }
+
+        return Status.OK;
     }
 
-    private boolean authenticate(String username, String password) {
+    private Status authenticate(String username, String password) {
         try (CallableStatement statement = con.prepareCall("{call AuthenticateUser(?,?,?)}")) {
             statement.setString(1, username);
             statement.setString(2, password);
@@ -104,10 +127,15 @@ public class DbCaller {
 
             statement.execute();
 
-            return statement.getBoolean(3);
+            if (!statement.getBoolean(3)) {
+                return Status.BAD_REQUEST;
+            }
+
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
+            return Status.INTERNAL_SERVER_ERROR;
         }
+
+        return Status.OK;
     }
 }
