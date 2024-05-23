@@ -20,7 +20,7 @@ public class TestGetEndpoint extends EndpointParent {
     @Test
     public void testGetNonExistingUser() {
         String response = getCalls().getUser("Non existent user");
-        Assertions.assertEquals(getHTTP_400(), response);
+        Assertions.assertEquals(getHTTP_404(), response);
     }
 
     @Test
@@ -33,5 +33,19 @@ public class TestGetEndpoint extends EndpointParent {
 
         response = getCalls().getUser(null);
         Assertions.assertEquals(getHTTP_400(), response);
+    }
+
+    @Test
+    public void testGetDeletedUser() {
+        User user = getUsers().get(0);
+
+        String response = getCalls().createUser(user.getUsername(), user.getPassword());
+        Assumptions.assumeTrue(response.equals(getHTTP_200()));
+
+        response = getCalls().removeUser(user.getUsername());
+        Assumptions.assumeTrue(response.equals(getHTTP_200()));
+
+        response = getCalls().getUser(user.getUsername());
+        Assertions.assertEquals(response, getHTTP_404());
     }
 }

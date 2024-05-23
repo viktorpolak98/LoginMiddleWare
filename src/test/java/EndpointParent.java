@@ -41,6 +41,10 @@ public abstract class EndpointParent {
         return "HTTP/1.0 400 Bad request";
     }
 
+    protected String getHTTP_404() {
+        return "HTTP/1.0 404 Not found";
+    }
+
     protected Calls getCalls() {
         return calls;
     }
