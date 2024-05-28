@@ -62,4 +62,17 @@ public class TestUpdateEndpoint extends EndpointParent {
         response = getCalls().updateUserPassword(user.getUsername(), user.getPassword());
         Assertions.assertEquals(response, getHTTP_200());
     }
+
+    @Test
+    public void testUpdatePasswordForRemovedUser() {
+        User user = getUsers().get(0);
+        String response = getCalls().createUser(user.getUsername(), user.getPassword());
+        Assumptions.assumeTrue(response.equals(getHTTP_200()));
+
+        response = getCalls().removeUser(user.getUsername());
+        Assumptions.assumeTrue(response.equals(getHTTP_200()));
+
+        response = getCalls().updateUserPassword(user.getUsername(), "new_" + user.getPassword());
+        Assertions.assertEquals(response, getHTTP_400());
+    }
 }

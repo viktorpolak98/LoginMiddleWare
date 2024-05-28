@@ -68,4 +68,18 @@ public class TestCreateEndpoint extends EndpointParent {
         response = getCalls().createUser(user.getUsername(), user.getPassword());
         Assertions.assertEquals(getHTTP_400(), response);
     }
+
+    @Test
+    public void testRecreateUser() {
+        User user = getUsers().get(0);
+
+        String response = getCalls().createUser(user.getUsername(), user.getPassword());
+        Assumptions.assumeTrue(response.equals(getHTTP_200()));
+
+        response = getCalls().removeUser(user.getUsername());
+        Assumptions.assumeTrue(response.equals(getHTTP_200()));
+
+        response = getCalls().createUser(user.getUsername(), user.getPassword());
+        Assertions.assertEquals(getHTTP_200(), response);
+    }
 }

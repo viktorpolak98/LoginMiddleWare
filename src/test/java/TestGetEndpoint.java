@@ -48,4 +48,24 @@ public class TestGetEndpoint extends EndpointParent {
         response = getCalls().getUser(user.getUsername());
         Assertions.assertEquals(response, getHTTP_404());
     }
+
+    @Test
+    public void testGetRecreatedUser() {
+        User user = getUsers().get(0);
+
+        String response = getCalls().createUser(user.getUsername(), user.getPassword());
+        Assumptions.assumeTrue(response.equals(getHTTP_200()));
+
+        response = getCalls().getUser(user.getUsername());
+        Assumptions.assumeTrue(response.equals(getHTTP_200()));
+
+        response = getCalls().removeUser(user.getUsername());
+        Assumptions.assumeTrue(response.equals(getHTTP_200()));
+
+        response = getCalls().createUser(user.getUsername(), user.getPassword());
+        Assumptions.assumeTrue(response.equals(getHTTP_200()));
+
+        response = getCalls().getUser(user.getUsername());
+        Assertions.assertEquals(getHTTP_200(), response);
+    }
 }

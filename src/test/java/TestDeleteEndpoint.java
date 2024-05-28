@@ -57,4 +57,21 @@ public class TestDeleteEndpoint extends EndpointParent {
         Assertions.assertEquals(getHTTP_400(), response);
     }
 
+    @Test
+    public void testRemoveRecreatedUser() {
+        User user = getUsers().get(0);
+
+        String response = getCalls().createUser(user.getUsername(), user.getPassword());
+        Assumptions.assumeTrue(response.equals(getHTTP_200()));
+
+        response = getCalls().removeUser(user.getUsername());
+        Assumptions.assumeTrue(response.equals(getHTTP_200()));
+
+        response = getCalls().createUser(user.getUsername(), user.getPassword());
+        Assumptions.assumeTrue(response.equals(getHTTP_200()));
+
+        response = getCalls().removeUser(user.getUsername());
+        Assertions.assertEquals(getHTTP_200(), response);
+    }
+
 }
