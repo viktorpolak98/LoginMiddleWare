@@ -10,8 +10,10 @@ public class DbCaller {
 
     public DbCaller(String dbUrl, String dbUser, String dbUserPassword) {
         try {
+            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+
             con = DriverManager.getConnection(dbUrl, dbUser, dbUserPassword);
-        } catch (SQLException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
