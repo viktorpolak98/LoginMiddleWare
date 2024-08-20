@@ -7,15 +7,14 @@ import java.sql.*;
 
 public class DbCaller {
     private Connection con;
+    private final String dbUrl;
+    private final String dbUser;
+    private final String dbUserPassword;
 
     public DbCaller(String dbUrl, String dbUser, String dbUserPassword) {
-        try {
-            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-
-            con = DriverManager.getConnection(dbUrl, dbUser, dbUserPassword);
-        } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+        this.dbUrl = dbUrl;
+        this.dbUser = dbUser;
+        this.dbUserPassword = dbUserPassword;
     }
 
     public boolean isConnected() throws SQLException {
@@ -23,29 +22,32 @@ public class DbCaller {
     }
 
     public synchronized Status execute(Request request) {
-        switch (request.getCall()) {
-            case createUser -> {
-                return createUser(request.getUsername(), request.getPassword());
-            }
+        try {
+            connect();
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+        Status status = switch (request.getCall()) {
+            case createUser -> createUser(request.getUsername(), request.getPassword());
 
-            case removeUser -> {
-                return removeUser(request.getUsername());
-            }
+            case removeUser -> removeUser(request.getUsername());
 
-            case updatePassword -> {
-                return updatePassword(request.getUsername(), request.getPassword());
-            }
+            case updatePassword -> updatePassword(request.getUsername(), request.getPassword());
 
-            case getUser -> {
-                return userExists(request.getUsername());
-            }
+            case getUser -> userExists(request.getUsername());
 
-            case authenticateUser -> {
-                return authenticate(request.getUsername(), request.getPassword());
-            }
+            case authenticateUser -> authenticate(request.getUsername(), request.getPassword());
+
+            default -> Status.BAD_REQUEST;
+        };
+
+        try {
+            disconnect();
+        } catch (SQLException e){
+            e.printStackTrace();
         }
 
-        return Status.BAD_REQUEST;
+        return status;
     }
 
 
@@ -139,5 +141,19 @@ public class DbCaller {
         }
 
         return Status.OK;
+    }
+
+    private void connect() throws  SQLException {
+        try {
+            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+
+            con = DriverManager.getConnection(dbUrl, dbUser, dbUserPassword);
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void disconnect() throws SQLException {
+        con.close();
     }
 }

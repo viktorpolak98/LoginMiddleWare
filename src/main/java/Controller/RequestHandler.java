@@ -9,7 +9,6 @@ import java.util.concurrent.*;
 public class RequestHandler {
     private final DbCaller dbCaller;
     private final ExecutorService executorService = Executors.newCachedThreadPool();
-    private boolean connected = true;
 
     public RequestHandler(DbCaller dbCaller) {
         this.dbCaller = dbCaller;
@@ -17,7 +16,7 @@ public class RequestHandler {
     }
 
     public Status performRequest(Request request) {
-        if (!connected) {
+        if (!checkConnection()) {
             return Status.INTERNAL_SERVER_ERROR;
         }
         try {
@@ -28,17 +27,13 @@ public class RequestHandler {
         }
     }
 
-    private void checkConnection() {
-        new Thread(() -> {
-            while (connected) {
-                try {
-                    connected = dbCaller.isConnected();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                    connected = false;
-                }
-            }
-        }).start();
+    private boolean checkConnection() {
+        try {
+            return dbCaller.isConnected();
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
 
+        return false;
     }
 }
