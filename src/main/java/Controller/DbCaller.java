@@ -17,10 +17,6 @@ public class DbCaller {
         this.dbUserPassword = dbUserPassword;
     }
 
-    public boolean isConnected() throws SQLException {
-        return con.isValid(5000);
-    }
-
     public synchronized Status execute(Request request) {
         try {
             connect();
