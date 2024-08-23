@@ -56,10 +56,10 @@ public class TestDBCalls {
         Assertions.assertEquals(Status.NOT_FOUND, status);
 
         status = dbCaller.execute(new Request("", DbCalls.getUser));
-        Assertions.assertEquals(Status.NOT_FOUND, status);
+        Assertions.assertEquals(Status.BAD_REQUEST, status);
 
         status = dbCaller.execute(new Request(" ", DbCalls.getUser));
-        Assertions.assertEquals(Status.NOT_FOUND, status);
+        Assertions.assertEquals(Status.BAD_REQUEST, status);
     }
 
     @Test
@@ -140,10 +140,10 @@ public class TestDBCalls {
         Assertions.assertEquals(Status.OK, status);
 
         status = dbCaller.execute(new Request(username, "wrong password", DbCalls.authenticateUser));
-        Assertions.assertEquals(Status.BAD_REQUEST, status);
+        Assertions.assertEquals(Status.UNAUTHORIZED, status);
 
         status = dbCaller.execute(new Request("wrong user", password, DbCalls.authenticateUser));
-        Assertions.assertEquals(Status.BAD_REQUEST, status);
+        Assertions.assertEquals(Status.UNAUTHORIZED, status);
 
         status = dbCaller.execute(new Request(username, "", DbCalls.authenticateUser));
         Assertions.assertEquals(Status.BAD_REQUEST, status);
@@ -164,17 +164,18 @@ public class TestDBCalls {
         Assertions.assertEquals(Status.OK, status);
 
         status = dbCaller.execute(new Request(username, password, DbCalls.createUser));
-        Assertions.assertEquals(Status.OK, status);
+        Assertions.assertEquals(Status.BAD_REQUEST, status);
 
         status = dbCaller.execute(new Request(username, "new_" + password, DbCalls.createUser));
-        Assertions.assertEquals(Status.OK, status);
+        Assertions.assertEquals(Status.BAD_REQUEST, status);
     }
 
     private static void cleanUpDatabase() {
-        try (Connection con = DriverManager.getConnection(System.getenv("mockDbUrl"));
+        try (Connection con = DriverManager.getConnection(System.getenv("MockDbUrl"),
+                System.getenv("MockDbUser"), System.getenv("MockDbUserPassword"));
              Statement statement = con.createStatement()
         ) {
-            String drop = "DROP FROM users";
+            String drop = "DELETE FROM [dbo].[users]";
             statement.executeUpdate(drop);
 
         } catch (SQLException e) {

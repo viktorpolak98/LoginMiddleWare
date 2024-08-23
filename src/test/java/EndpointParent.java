@@ -20,7 +20,7 @@ public abstract class EndpointParent {
                 System.getenv("MockDbUrl"),
                 System.getenv("MockDbUser"),
                 System.getenv("MockDbUserPassword"));
-        users = XMLTestdataReader.readUsers("..\\Testdata\\Testdata.xml");
+        users = XMLTestdataReader.readUsers("src\\test\\java\\Testdata\\Testdata.xml");
         cleanUpDatabase();
     }
 
@@ -50,10 +50,11 @@ public abstract class EndpointParent {
     }
 
     protected static void cleanUpDatabase() {
-        try (Connection con = DriverManager.getConnection(System.getenv("mockDbUrl"));
+        try (Connection con = DriverManager.getConnection(System.getenv("MockDbUrl"),
+                System.getenv("MockDbUser"), System.getenv("MockDbUserPassword"));
              Statement statement = con.createStatement()
         ) {
-            String drop = "DROP FROM users";
+            String drop = "DELETE FROM [dbo].[users]";
             statement.executeUpdate(drop);
 
         } catch (SQLException e) {
