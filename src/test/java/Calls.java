@@ -50,7 +50,7 @@ class Calls {
     }
 
     protected void setUpConnectionAndURL(String endpoint, String requestMethod) {
-        URL url = createUrl(BASE_URL + endpoint);
+        URL url = createUrl(endpoint);
 
         Assumptions.assumeFalse(url == null);
         Assumptions.assumeFalse(url.getPath().isBlank());
@@ -88,8 +88,12 @@ class Calls {
 
     protected URL createUrl(String endpoint) {
         URL url = null;
+        System.out.println(endpoint);
+        String urlString = BASE_URL + endpoint;
+        System.out.println(urlString);
         try {
-            url = URI.create(BASE_URL + endpoint).toURL();
+            url = URI.create(urlString).toURL();
+            System.out.println(url.getPath());
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }

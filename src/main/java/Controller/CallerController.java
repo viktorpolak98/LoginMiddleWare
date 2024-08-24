@@ -3,26 +3,61 @@ package Controller;
 import Model.DbCalls;
 import Model.Request;
 import Model.Status;
-import spark.Response;
-
-import static spark.Spark.*;
+import io.javalin.Javalin;
 
 public class CallerController {
     private final int BAD_REQUEST_CODE = 400;
-    private final int FORBIDDEN_HOST_CODE = 401;
+    private final int UNAUTHORIZED_CODE = 401;
     private final String BAD_REQUEST_STR = "Bad request";
-    private final String FORBIDDEN_HOST_STR = "Unauthorized";
+    private final String UNAUTHORIZED_STR = "Unauthorized";
     private final RequestHandler requestHandler;
     private final ConfigurationController configurationController;
 
 
     public CallerController(String allowedHostsConfig, String dbUrl, String dbUser, String dbUserPassword) {
-        port(8080);
+        Javalin app = Javalin.create();
+//        initRoutes(app);
+//        app.start(8080);
+
+//        app.get("/get", ctx -> ctx.status(500).result("This is a test"));//.start(8080);
+//        app.post("/post", ctx -> ctx.status(200).result("ok"));
+
+        app.start(8080);
         configurationController = new ConfigurationController(allowedHostsConfig);
         requestHandler = new RequestHandler(new DbCaller(dbUrl, dbUser, dbUserPassword));
-        initRoutes();
     }
 
+    public void initRoutes(Javalin app){
+        app.before(context -> {
+            if(!allowedHost(context.host())) {
+                context.status(UNAUTHORIZED_CODE).result(UNAUTHORIZED_STR);
+            }
+        });
+
+        app.patch("/update-password/{username}/{password}", context -> {
+            //TODO: implement
+        });
+
+        app.delete("/remove/{username}", context -> {
+            //TODO: implement
+        });
+
+        app.post("/create-user/{username}/{password}", context -> {
+            //TODO: implement
+        });
+
+        app.get("/authenticate/{username}/{password}", context -> {
+            //TODO: implement
+        });
+
+        app.get("/user/{username}", context -> {
+            //TODO: implement
+        });
+
+
+    }
+
+/*
     public void initRoutes() {
         options("/*",
                 (request, response) -> {
@@ -44,7 +79,7 @@ public class CallerController {
 
         before((request, response) -> {
             if (!allowedHost(request.host())) {
-                response.header(FORBIDDEN_HOST_STR, FORBIDDEN_HOST_CODE);
+                response.header(UNAUTHORIZED_STR, UNAUTHORIZED_CODE);
             }
             response.header("Access-Control-Allow-Origin", "*");
         });
@@ -81,11 +116,13 @@ public class CallerController {
                 res.header(BAD_REQUEST_STR, BAD_REQUEST_CODE);
                 return res;
             }
+            System.out.println(req.params(":username") + req.params(":password"));
 
             Status requestStatus = requestHandler.
                     performRequest(new Request(req.params(":username"), req.params(":password"), DbCalls.createUser));
 
             setResHeader(requestStatus, res);
+            System.out.println(res.body());
 
             return res;
         });
@@ -109,14 +146,18 @@ public class CallerController {
                 res.header(BAD_REQUEST_STR, BAD_REQUEST_CODE);
                 return res;
             }
+            System.out.println(req.params("username"));
 
             Status requestStatus = requestHandler.
                     performRequest(new Request(req.params(":username"), DbCalls.getUser));
 
             setResHeader(requestStatus, res);
 
+            System.out.println(res.body());
+
             return res;
         });
+
     }
 
     private void setResHeader(Status status, Response res) {
@@ -134,9 +175,10 @@ public class CallerController {
             case BAD_REQUEST -> res.header(BAD_REQUEST_STR, BAD_REQUEST_CODE);
             case NOT_FOUND -> res.header(NOT_FOUND_STR, NOT_FOUND_CODE);
             case OK -> res.header(OK_STR, OK_CODE);
+            case UNAUTHORIZED -> res.header(UNAUTHORIZED_STR, UNAUTHORIZED_CODE);
         }
     }
-
+*/
     private boolean allowedHost(String caller) {
         return configurationController.checkIfAllowedHost(caller);
     }
