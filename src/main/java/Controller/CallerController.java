@@ -60,9 +60,7 @@ public class CallerController {
 
         app.patch("/update-password/", this::updatePassword);
 
-        app.delete("/remove/", context -> {
-            //TODO: implement
-        });
+        app.delete("/remove-user/", this::removeUser);
 
         app.post("/create-user/", context -> {
             //TODO: implement
@@ -95,6 +93,19 @@ public class CallerController {
         setResponse(requestStatus, context);
     }
 
+    private void removeUser(Context context) throws JsonProcessingException {
+        ContextBody contextBody = mapper.readValue(context.body(), ContextBody.class);
+
+        if (invalidCall(contextBody.getUsername())){
+            context.status(BAD_REQUEST_CODE).result(BAD_REQUEST_STR);
+            return;
+        }
+
+        Status requestStatus = requestHandler.
+                performRequest(new Request(contextBody.getUsername(), DbCalls.removeUser));
+
+        setResponse(requestStatus, context);
+    }
 /*
     public void initRoutes() {
         options("/*",
