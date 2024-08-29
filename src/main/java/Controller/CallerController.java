@@ -64,9 +64,7 @@ public class CallerController {
 
         app.post("/create-user/", this::createUser);
 
-        app.get("/authenticate/", context -> {
-            //TODO: implement
-        });
+        app.get("/authenticate/", this::authenticate);
 
         app.get("/user/", context -> {
             context.status(200).result(context.pathParam("username"));
@@ -116,6 +114,21 @@ public class CallerController {
         Status requestStatus = requestHandler.
                 performRequest(new Request(contextBody.getUsername(), contextBody.getPassword(),
                         DbCalls.createUser));
+
+        setResponse(requestStatus, context);
+    }
+
+    private void authenticate(Context context) throws JsonProcessingException {
+        ContextBody contextBody = mapper.readValue(context.body(), ContextBody.class);
+
+        if (invalidCall(contextBody.getUsername(), contextBody.getPassword())){
+            context.status(BAD_REQUEST_CODE).result(BAD_REQUEST_STR);
+            return;
+        }
+
+        Status requestStatus = requestHandler.
+                performRequest(new Request(contextBody.getUsername(), contextBody.getPassword(),
+                        DbCalls.authenticateUser));
 
         setResponse(requestStatus, context);
     }
