@@ -21,32 +21,11 @@ public class CallerController {
 
 
     public CallerController(String allowedHostsConfig, String dbUrl, String dbUser, String dbUserPassword) {
+
         Javalin app = Javalin.create();
-//        initRoutes(app);
-//        app.start(8080);
-
-//        app.get("/get", ctx -> ctx.status(500).result("This is a test"));//.start(8080);
-//        app.post("/post", ctx -> ctx.status(200).result("ok"));
-//
-//        app.get("/test/{param}", context -> {
-//            String bodyText = context.body();
-//
-//
-//            ObjectMapper mapper = new ObjectMapper();
-//            ContextBody body = mapper.readValue(context.body(), ContextBody.class);
-//
-//            String pass = body.getPassword();//context.formParam("Password");
-//            String user = body.getUsername();//context.formParam("Username");
-//
-//            System.out.println(pass);
-//
-//            System.out.println(user);
-//
-//
-//           context.status(200).result("hello there");
-//        });
-
+        initRoutes(app);
         app.start(8080);
+
         configurationController = new ConfigurationController(allowedHostsConfig);
         requestHandler = new RequestHandler(new DbCaller(dbUrl, dbUser, dbUserPassword));
     }
@@ -143,110 +122,7 @@ public class CallerController {
 
         setResponse(requestStatus, context);
     }
-/*
-    public void initRoutes() {
-        options("/*",
-                (request, response) -> {
-                    String accessControlRequestHeaders = request.headers("Access-Control-Request-Headers");
 
-                    if (accessControlRequestHeaders != null) {
-                        response.header("Access-Control-Allow-Headers", accessControlRequestHeaders);
-                    }
-
-                    String accessControlRequestMethod = request.headers("Access-Control-Request-Method");
-
-                    if (accessControlRequestMethod != null) {
-                        response.header("Access-Control-Allow-Methods", accessControlRequestMethod);
-                    }
-
-                    return "OK";
-                }
-        );
-
-        before((request, response) -> {
-            if (!allowedHost(request.host())) {
-                response.header(UNAUTHORIZED_STR, UNAUTHORIZED_CODE);
-            }
-            response.header("Access-Control-Allow-Origin", "*");
-        });
-
-
-        patch("/update-password/:username/:password", (req, res) -> {
-            if (invalidCall(req.params(":username"), req.params(":password"))) {
-                res.header(BAD_REQUEST_STR, BAD_REQUEST_CODE);
-                return res;
-            }
-            Status requestStatus = requestHandler.
-                    performRequest(new Request(req.params(":username"), req.params(":password"), DbCalls.updatePassword));
-
-            setResHeader(requestStatus, res);
-
-            return res;
-        });
-
-        delete("/remove/:username", (req, res) -> {
-            if (invalidCall(req.params(":username"))) {
-                res.header(BAD_REQUEST_STR, BAD_REQUEST_CODE);
-                return res;
-            }
-            Status requestStatus = requestHandler.
-                    performRequest(new Request(req.params(":username"), DbCalls.removeUser));
-
-            setResHeader(requestStatus, res);
-
-            return res;
-        });
-
-        post("/create-user/:username/:password", (req, res) -> {
-            if (invalidCall(req.params(":username"), req.params(":password"))) {
-                res.header(BAD_REQUEST_STR, BAD_REQUEST_CODE);
-                return res;
-            }
-            System.out.println(req.params(":username") + req.params(":password"));
-
-            Status requestStatus = requestHandler.
-                    performRequest(new Request(req.params(":username"), req.params(":password"), DbCalls.createUser));
-
-            setResHeader(requestStatus, res);
-            System.out.println(res.body());
-
-            return res;
-        });
-
-        get("/authenticate/:username/:password/", (req, res) -> {
-            if (invalidCall(req.params(":username"), req.params(":password"))) {
-                res.header(BAD_REQUEST_STR, BAD_REQUEST_CODE);
-                return res;
-            }
-
-            Status requestStatus = requestHandler.
-                    performRequest(new Request(req.params(":username"), req.params(":password"), DbCalls.authenticateUser));
-
-            setResHeader(requestStatus, res);
-
-            return res;
-        });
-
-        get("/user/:username", (req, res) -> {
-            if (invalidCall(req.params(":username"))) {
-                res.header(BAD_REQUEST_STR, BAD_REQUEST_CODE);
-                return res;
-            }
-            System.out.println(req.params("username"));
-
-            Status requestStatus = requestHandler.
-                    performRequest(new Request(req.params(":username"), DbCalls.getUser));
-
-            setResHeader(requestStatus, res);
-
-            System.out.println(res.body());
-
-            return res;
-        });
-
-    }
-
-*/
     private void setResponse(Status status, Context context) {
         String INTERNAL_SERVER_ERROR_STR = "Request failed due to internal server error";
         int INTERNAL_SERVER_ERROR_CODE = 500;
