@@ -1,7 +1,15 @@
 USE [UserDb]
 GO
 
-/****** Object:  Table [dbo].[APIKeys]    Script Date: 2024-09-01 20:13:13 ******/
+ALTER TABLE [dbo].[APIKeys] DROP CONSTRAINT [FK__APIKeys__Usernam__787EE5A0]
+GO
+
+/****** Object:  Table [dbo].[APIKeys]    Script Date: 2024-09-01 20:50:39 ******/
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[APIKeys]') AND type in (N'U'))
+DROP TABLE [dbo].[APIKeys]
+GO
+
+/****** Object:  Table [dbo].[APIKeys]    Script Date: 2024-09-01 20:50:39 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -27,7 +35,5 @@ UNIQUE NONCLUSTERED
 GO
 
 ALTER TABLE [dbo].[APIKeys]  WITH CHECK ADD FOREIGN KEY([Username])
-REFERENCES [dbo].[users] ([Username])
+REFERENCES [dbo].[APIUsers] ([Username])
 GO
-
-
