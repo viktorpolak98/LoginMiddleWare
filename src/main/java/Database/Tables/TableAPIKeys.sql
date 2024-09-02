@@ -18,14 +18,14 @@ GO
 
 CREATE TABLE [dbo].[APIKeys](
 	[Id] [int] IDENTITY(1,1) NOT NULL,
-	[Username] [nvarchar](255) NOT NULL,
+	[EmailAddress] [nvarchar](255) NOT NULL,
 	[APIKey] [nvarchar](195) NOT NULL,
 	[ValidFrom] [date] NOT NULL,
 	[ValidTo] [date] NULL,
  CONSTRAINT [PK_APIKeys] PRIMARY KEY CLUSTERED
 (
 	[APIKey] ASC,
-	[Username] ASC
+	[EmailAddress] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY],
 UNIQUE NONCLUSTERED
 (
@@ -34,6 +34,6 @@ UNIQUE NONCLUSTERED
 ) ON [PRIMARY]
 GO
 
-ALTER TABLE [dbo].[APIKeys]  WITH CHECK ADD FOREIGN KEY([Username])
-REFERENCES [dbo].[APIUsers] ([Username])
+ALTER TABLE [dbo].[APIKeys]  WITH CHECK ADD FOREIGN KEY([EmailAddress])
+REFERENCES [dbo].[APIUsers] ([EmailAddress])
 GO
