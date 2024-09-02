@@ -10,7 +10,7 @@ GO
 
 CREATE TABLE [dbo].[APIUsers](
 	[Id] [int] IDENTITY(1,1) NOT NULL,
-	[Username] [nvarchar](255) NOT NULL,
+	[EmailAddress] [nvarchar](255) NOT NULL,
 PRIMARY KEY CLUSTERED
 (
 	[Username] ASC

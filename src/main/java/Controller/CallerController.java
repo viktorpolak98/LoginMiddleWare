@@ -17,7 +17,7 @@ public class CallerController {
     private final String UNAUTHORIZED_STR = "Unauthorized";
     private final RequestHandler requestHandler;
     private final ConfigurationController configurationController;
-    private ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper = new ObjectMapper();
 
 
     public CallerController(String allowedHostsConfig, String dbUrl, String dbUser, String dbUserPassword) {
