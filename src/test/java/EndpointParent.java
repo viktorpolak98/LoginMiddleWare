@@ -16,7 +16,7 @@ public abstract class EndpointParent {
 
     @BeforeAll
     protected static void beforeTests() {
-        new CallerController(System.getenv("AllowedHostsConfig"),
+        new CallerController(
                 System.getenv("MockDbUrl"),
                 System.getenv("MockDbUser"),
                 System.getenv("MockDbUserPassword"));

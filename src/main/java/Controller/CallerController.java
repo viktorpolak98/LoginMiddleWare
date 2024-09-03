@@ -8,34 +8,30 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class CallerController {
     private final int BAD_REQUEST_CODE = 400;
-    private final int UNAUTHORIZED_CODE = 401;
     private final String BAD_REQUEST_STR = "Bad request";
-    private final String UNAUTHORIZED_STR = "Unauthorized";
     private final RequestHandler requestHandler;
-    private final ConfigurationController configurationController;
     private final ObjectMapper mapper = new ObjectMapper();
+    private final Logger logger;
 
 
-    public CallerController(String allowedHostsConfig, String dbUrl, String dbUser, String dbUserPassword) {
 
+    public CallerController(String dbUrl, String dbUser, String dbUserPassword) {
+        logger = LoggerFactory.getLogger(CallerController.class);
         Javalin app = Javalin.create();
         initRoutes(app);
         app.start(8080);
 
-        configurationController = new ConfigurationController(allowedHostsConfig);
         requestHandler = new RequestHandler(new DbCaller(dbUrl, dbUser, dbUserPassword));
     }
 
     public void initRoutes(Javalin app){
-        app.before(context -> {
-            if(!allowedHost(context.host())) {
-                context.status(UNAUTHORIZED_CODE).result(UNAUTHORIZED_STR);
-            }
-        });
+        app.before(context -> logger.info("Received call from: " + context.host()));
 
         app.patch("/update-password/", this::updatePassword);
 
@@ -133,6 +129,8 @@ public class CallerController {
         String NOT_FOUND_STR = "Not found";
         int NOT_FOUND_CODE = 404;
 
+        String UNAUTHORIZED_STR = "Unauthorized";
+        int UNAUTHORIZED_CODE = 401;
         switch (status){
             case INTERNAL_SERVER_ERROR -> context.status(INTERNAL_SERVER_ERROR_CODE).result(INTERNAL_SERVER_ERROR_STR);
             case BAD_REQUEST -> context.status(BAD_REQUEST_CODE).result(BAD_REQUEST_STR);
@@ -140,9 +138,6 @@ public class CallerController {
             case OK -> context.status(OK_CODE).result(OK_STR);
             case UNAUTHORIZED -> context.status(UNAUTHORIZED_CODE).result(UNAUTHORIZED_STR);
         }
-    }
-    private boolean allowedHost(String caller) {
-        return configurationController.checkIfAllowedHost(caller);
     }
 
     private boolean invalidCall(String... params) {
