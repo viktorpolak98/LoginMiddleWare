@@ -31,7 +31,7 @@ public class CallerController {
     }
 
     public void initRoutes(Javalin app){
-        app.before(context -> logger.info("Received call from: " + context.host()));
+        app.before(context -> logger.info("Received call from: {}", context.host()));
 
         app.patch("/update-password/", this::updatePassword);
 
