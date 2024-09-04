@@ -31,7 +31,7 @@ public class CallerController {
     }
 
     public void initRoutes(Javalin app){
-        app.before(context -> logger.info("Received call from: {}", context.host()));
+        app.before(this::beforeRequest);
 
         app.patch("/update-password/", this::updatePassword);
 
@@ -43,6 +43,21 @@ public class CallerController {
 
         app.get("/user/", this::user);
 
+
+    }
+
+    private void beforeRequest(Context context) throws JsonProcessingException {
+        logger.info("Received call from: {}", context.host());
+
+        ContextBody contextBody = mapper.readValue(context.body(), ContextBody.class);
+
+
+        if (invalidCall(contextBody.getEmailAddress(), contextBody.getAPIKey())){
+            context.status(BAD_REQUEST_CODE).result(BAD_REQUEST_STR);
+            return;
+        }
+
+        //TODO: Implement check of APIKey and emailAddress
 
     }
 

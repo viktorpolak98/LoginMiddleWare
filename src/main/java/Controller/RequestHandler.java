@@ -14,6 +14,11 @@ public class RequestHandler {
         this.dbCaller = dbCaller;
     }
 
+    public Status checkRequester(String emailAddress, String APIKey){
+        //TODO: Implement
+        return Status.NOT_FOUND;
+    }
+
     public Status performRequest(Request request) {
         try {
             return executorService.submit(() -> dbCaller.execute(request)).get();

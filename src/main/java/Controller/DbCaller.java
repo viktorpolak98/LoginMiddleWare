@@ -167,6 +167,11 @@ public class DbCaller {
         return Status.OK;
     }
 
+    private Status checkRequesterKey() throws SQLException {
+        //TODO: Implement
+        return Status.NOT_FOUND;
+    }
+
     private void connect() throws  SQLException {
         try {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
