@@ -1,27 +1,22 @@
-package Controller;
+package Controller.Database;
 
 import Model.Request;
 import Model.Status;
-import com.microsoft.sqlserver.jdbc.SQLServerException;
 
-import java.sql.*;
+import java.sql.CallableStatement;
+import java.sql.SQLException;
+import java.sql.Types;
 
-public class DbCaller {
-    private Connection con;
-    private final String dbUrl;
-    private final String dbUser;
-    private final String dbUserPassword;
+public class DbRequestCaller extends DatabaseBase {
 
-    public DbCaller(String dbUrl, String dbUser, String dbUserPassword) {
-        this.dbUrl = dbUrl;
-        this.dbUser = dbUser;
-        this.dbUserPassword = dbUserPassword;
+    public DbRequestCaller(String dbUrl, String dbUser, String dbUserPassword) {
+        super(dbUrl, dbUser, dbUserPassword);
     }
 
     public synchronized Status execute(Request request) {
         try {
             connect();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         Status status = switch (request.getCall()) {
@@ -40,7 +35,7 @@ public class DbCaller {
 
         try {
             disconnect();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
 
@@ -49,23 +44,22 @@ public class DbCaller {
 
 
     private Status createUser(String username, String password) {
-        try {
-            if (isInputInvalid(username, password)){
-                return Status.BAD_REQUEST;
-            }
-            if (userExists(username) != Status.NOT_FOUND){
-                return Status.BAD_REQUEST;
-            }
+        if (isInputInvalid(username, password)) {
+            return Status.BAD_REQUEST;
+        }
+        if (userExists(username) != Status.NOT_FOUND) {
+            return Status.BAD_REQUEST;
+        }
 
-            CallableStatement statement = con.prepareCall("{call CreateUser(?,?)}");
+        try (CallableStatement statement = getConnection().prepareCall("{call CreateUser(?,?)}")) {
             statement.setString(1, username);
             statement.setString(2, password);
-
             statement.execute();
 
-            if (statement.getUpdateCount() != 1){
+            if (statement.getUpdateCount() != 1) {
                 return Status.BAD_REQUEST;
             }
+
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -76,11 +70,11 @@ public class DbCaller {
     }
 
     private Status removeUser(String username) {
-        if (isInputInvalid(username)){
+        if (isInputInvalid(username)) {
             return Status.BAD_REQUEST;
         }
 
-        try (CallableStatement statement = con.prepareCall("{call DeleteUser(?)}")) {
+        try (CallableStatement statement = getConnection().prepareCall("{call DeleteUser(?)}")) {
             statement.setString(1, username);
 
             statement.execute();
@@ -98,17 +92,17 @@ public class DbCaller {
     }
 
     private Status updatePassword(String username, String password) {
-        if (isInputInvalid(username, password)){
+        if (isInputInvalid(username, password)) {
             return Status.BAD_REQUEST;
         }
 
-        try (CallableStatement statement = con.prepareCall("{call UpdatePassword(?,?)}")) {
+        try (CallableStatement statement = getConnection().prepareCall("{call UpdatePassword(?,?)}")) {
             statement.setString(1, username);
             statement.setString(2, password);
 
             statement.execute();
 
-            if (statement.getUpdateCount() != 1){
+            if (statement.getUpdateCount() != 1) {
                 return Status.BAD_REQUEST;
             }
 
@@ -121,16 +115,16 @@ public class DbCaller {
     }
 
     private Status userExists(String username) {
-        if (isInputInvalid(username)){
+        if (isInputInvalid(username)) {
             return Status.BAD_REQUEST;
         }
 
-        try (CallableStatement statement = con.prepareCall("{call GetUser(?)}")) {
+        try (CallableStatement statement = getConnection().prepareCall("{call GetUser(?)}")) {
             statement.setString(1, username);
 
             statement.execute();
 
-            if (!statement.getResultSet().next()){
+            if (!statement.getResultSet().next()) {
                 return Status.NOT_FOUND;
             }
 
@@ -144,11 +138,11 @@ public class DbCaller {
     }
 
     private Status authenticate(String username, String password) {
-        if (isInputInvalid(username, password)){
+        if (isInputInvalid(username, password)) {
             return Status.BAD_REQUEST;
         }
 
-        try (CallableStatement statement = con.prepareCall("{call AuthenticateUser(?,?,?)}")) {
+        try (CallableStatement statement = getConnection().prepareCall("{call AuthenticateUser(?,?,?)}")) {
             statement.setString(1, username);
             statement.setString(2, password);
             statement.registerOutParameter(3, Types.BIT);
@@ -165,32 +159,5 @@ public class DbCaller {
         }
 
         return Status.OK;
-    }
-
-    private Status checkRequesterKey() throws SQLException {
-        //TODO: Implement
-        return Status.NOT_FOUND;
-    }
-
-    private void connect() throws  SQLException {
-        try {
-            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-
-            con = DriverManager.getConnection(dbUrl, dbUser, dbUserPassword);
-        } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private boolean isInputInvalid(String username){
-        return username == null || username.trim().isBlank();
-    }
-
-    private boolean isInputInvalid(String username, String password){
-        return isInputInvalid(username) || (password == null || password.trim().isBlank());
-    }
-
-    private void disconnect() throws SQLException {
-        con.close();
     }
 }

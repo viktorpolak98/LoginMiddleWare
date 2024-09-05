@@ -2,11 +2,10 @@ package Model;
 
 public class ContextBody {
     private String emailAddress;
-
     private String APIKey;
-
     private String username;
     private String password;
+
     public String getEmailAddress() {
         return emailAddress;
     }

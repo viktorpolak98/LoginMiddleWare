@@ -1,5 +1,6 @@
 package Controller;
 
+import Controller.Database.DbRequestCaller;
 import Model.ContextBody;
 import Model.DbCalls;
 import Model.Status;
@@ -27,7 +28,7 @@ public class CallerController {
         initRoutes(app);
         app.start(8080);
 
-        requestHandler = new RequestHandler(new DbCaller(dbUrl, dbUser, dbUserPassword));
+        requestHandler = new RequestHandler(new DbRequestCaller(dbUrl, dbUser, dbUserPassword));
     }
 
     public void initRoutes(Javalin app){
