@@ -1,7 +1,6 @@
 USE [UserDb]
 GO
 
-/****** Object:  StoredProcedure [dbo].[UpdatePassword]    Script Date: 2024-04-25 19:30:00 ******/
 SET ANSI_NULLS ON
 GO
 

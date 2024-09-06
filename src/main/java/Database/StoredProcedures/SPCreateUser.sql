@@ -1,7 +1,6 @@
 USE [UserDb]
 GO
 
-/****** Object:  StoredProcedure [dbo].[CreateUser]    Script Date: 2024-04-25 19:29:48 ******/
 SET ANSI_NULLS ON
 GO
 

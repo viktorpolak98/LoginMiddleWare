@@ -1,7 +1,6 @@
 USE [UserDb]
 GO
 
-/****** Object:  Table [dbo].[users]    Script Date: 2024-04-25 19:30:12 ******/
 SET ANSI_NULLS ON
 GO
 
