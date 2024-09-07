@@ -66,6 +66,7 @@ public class CallerController {
         ContextBody contextBody = mapper.readValue(context.body(), ContextBody.class);
 
         if (invalidCall(contextBody.getUsername(), contextBody.getPassword())){
+            logger.warn("Update password failed due to bad request");
             context.status(BAD_REQUEST_CODE).result(BAD_REQUEST_STR);
             return;
         }
@@ -81,6 +82,7 @@ public class CallerController {
         ContextBody contextBody = mapper.readValue(context.body(), ContextBody.class);
 
         if (invalidCall(contextBody.getUsername())){
+            logger.warn("Remove user failed due to bad request");
             context.status(BAD_REQUEST_CODE).result(BAD_REQUEST_STR);
             return;
         }
@@ -95,6 +97,7 @@ public class CallerController {
         ContextBody contextBody = mapper.readValue(context.body(), ContextBody.class);
 
         if (invalidCall(contextBody.getUsername(), contextBody.getPassword())){
+            logger.warn("Create user failed due to bad request");
             context.status(BAD_REQUEST_CODE).result(BAD_REQUEST_STR);
             return;
         }
@@ -110,6 +113,7 @@ public class CallerController {
         ContextBody contextBody = mapper.readValue(context.body(), ContextBody.class);
 
         if (invalidCall(contextBody.getUsername(), contextBody.getPassword())){
+            logger.warn("Authentication failed due to bad request");
             context.status(BAD_REQUEST_CODE).result(BAD_REQUEST_STR);
             return;
         }
@@ -125,6 +129,7 @@ public class CallerController {
         ContextBody contextBody = mapper.readValue(context.body(), ContextBody.class);
 
         if (invalidCall(contextBody.getUsername())){
+            logger.warn("Get user failed due to bad request");
             context.status(BAD_REQUEST_CODE).result(BAD_REQUEST_STR);
             return;
         }
