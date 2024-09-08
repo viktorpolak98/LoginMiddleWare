@@ -1,10 +1,12 @@
-package Controller;
+package Controller.Handlers;
 
 import Controller.Database.DbRequestCaller;
 import Model.Request;
 import Model.Status;
 
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class RequestHandler {
     private final DbRequestCaller dbRequestCaller;
@@ -12,11 +14,6 @@ public class RequestHandler {
 
     public RequestHandler(DbRequestCaller dbRequestCaller) {
         this.dbRequestCaller = dbRequestCaller;
-    }
-
-    public Status checkRequester(String emailAddress, String APIKey){
-        //TODO: Implement
-        return Status.NOT_FOUND;
     }
 
     public Status performRequest(Request request) {
