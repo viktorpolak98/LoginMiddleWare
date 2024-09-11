@@ -1,6 +1,7 @@
 USE [UserDb]
 GO
 
+/****** Object:  Table [dbo].[APIKeys]    Script Date: 2024-09-21 11:44:52 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -11,6 +12,7 @@ CREATE TABLE [dbo].[APIKeys](
 	[Id] [int] IDENTITY(1,1) NOT NULL,
 	[EmailAddress] [nvarchar](255) NOT NULL,
 	[APIKey] [nvarchar](195) NOT NULL,
+	[Salt] [uniqueidentifier] NOT NULL,
 	[ValidFrom] [date] NOT NULL,
 	[ValidTo] [date] NULL,
  CONSTRAINT [PK_APIKeys] PRIMARY KEY CLUSTERED
