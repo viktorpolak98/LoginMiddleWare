@@ -1,7 +1,6 @@
 USE [UserDb]
 GO
 
-/****** Object:  Table [dbo].[APIKeys]    Script Date: 2024-09-21 11:44:52 ******/
 SET ANSI_NULLS ON
 GO
 

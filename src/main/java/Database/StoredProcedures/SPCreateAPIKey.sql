@@ -1,7 +1,6 @@
 USE [UserDb]
 GO
 
-/****** Object:  StoredProcedure [dbo].[CreateAPIKey]    Script Date: 2024-09-21 12:00:34 ******/
 SET ANSI_NULLS ON
 GO
 
