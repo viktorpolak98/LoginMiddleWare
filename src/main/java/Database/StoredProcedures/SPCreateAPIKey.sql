@@ -13,12 +13,11 @@ CREATE procedure [dbo].[CreateAPIKey] @APIUser nvarchar(255), @APIKey nvarchar(1
 As
 Begin
 	declare @hashed_key varbinary(64);
-	declare @Salt UNIQUEIDENTIFIER = newid();
 	declare @ValidFrom date = GETDATE();
 
 
-	SET @hashed_key = HASHBYTES('SHA2_512', CONCAT(@APIKey, CAST(@salt AS NVARCHAR(36))));
+	SET @hashed_key = HASHBYTES('SHA2_512', @APIKey);
 
-insert into UserDb.dbo.APIKeys VALUES (@APIUser, @hashed_key, @Salt, @ValidFrom, @ValidTo)
+insert into UserDb.dbo.APIKeys VALUES (@APIUser, @hashed_key, @ValidFrom, @ValidTo)
 end
 GO
