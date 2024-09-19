@@ -7,21 +7,20 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-
-
-CREATE procedure [dbo].[AuthenticateAPIKey] @EmailAddress nvarchar(255), @APIKey nvarchar(255), @Is_valid BIT OUTPUT
+CREATE procedure [dbo].[AuthenticateAPIKey] @EmailAddress nvarchar(255), @APIKey nvarchar(195), @Is_valid BIT OUTPUT
 As
-	DECLARE @stored_hash NVARCHAR(255);
-    DECLARE @stored_salt UNIQUEIDENTIFIER;
-    DECLARE @entered_hash NVARCHAR(255);
+	DECLARE @stored_hash NVARCHAR(195);
+    DECLARE @entered_hash NVARCHAR(195);
+	DECLARE @APIUser NVARCHAR(255);
+	DECLARE @ValidTo date;
 
-    SELECT @stored_hash = APIKey, @stored_salt = salt
-    FROM APIKeys
-    WHERE EmailAddress = @EmailAddress AND ValidTo <= GETDATE();
+	SET @entered_hash = HASHBYTES('SHA2_512', @APIKey);
 
-    SET @entered_hash = HASHBYTES('SHA2_512', CONCAT(@APIKey, CAST(@stored_salt AS NVARCHAR(36))));
+    SELECT @stored_hash = APIKey, @APIUser = EmailAddress, @ValidTo = ValidTo
+    FROM [dbo].APIKeys
+    WHERE APIKey = @entered_hash
 
-    IF @entered_hash = @stored_hash
+    IF @entered_hash = @stored_hash AND @APIUser = @EmailAddress AND (@ValidTo <= GETDATE() OR @ValidTo IS NULL)
         SET @Is_valid = 1;
     ELSE
         SET @Is_valid = 0;
