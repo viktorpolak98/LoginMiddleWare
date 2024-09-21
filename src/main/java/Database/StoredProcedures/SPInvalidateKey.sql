@@ -9,13 +9,13 @@ GO
 
 
 
-CREATE procedure [dbo].[InvalidateKey] @APIKey nvarchar(195)
+CREATE procedure [dbo].[InvalidateKey] @APIKey nvarchar(195), @EmailAddress nvarchar(255)
 As
     DECLARE @yesterday date = DATEADD(day, -1, CAST(GETDATE() AS date));
 	DECLARE @hashedKey nvarchar(195) = HASHBYTES('SHA2_512', @APIKey);
 
     UPDATE APIKeys
     SET ValidTo = @yesterday
-    WHERE APIKey = @hashedKey;
+    WHERE APIKey = @hashedKey AND EmailAddress = @EmailAddress;
 
 GO
