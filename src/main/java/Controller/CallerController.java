@@ -89,7 +89,7 @@ public class CallerController {
         }
 
         Status requestStatus = requestHandler.
-                performRequest(new Request(contextBody.getUsername(), DbCalls.removeUser));
+                performRequest(new Request(DbCalls.removeUser, contextBody.getUsername()));
 
         setResponse(requestStatus, context);
     }
@@ -136,7 +136,7 @@ public class CallerController {
         }
 
         Status requestStatus = requestHandler.
-                performRequest(new Request(contextBody.getUsername(), DbCalls.getUser));
+                performRequest(new Request(DbCalls.getUser, contextBody.getUsername()));
 
         setResponse(requestStatus, context);
     }

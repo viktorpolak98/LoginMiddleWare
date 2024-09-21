@@ -35,8 +35,8 @@ public class TestDBCalls {
                 dbRequestCaller.execute(new Request(DbCalls.createUser, username, password)),
                 dbRequestCaller.execute(new Request(DbCalls.authenticateUser, username, password)),
                 dbRequestCaller.execute(new Request(DbCalls.updatePassword, username, "new_" + password)),
-                dbRequestCaller.execute(new Request(username, DbCalls.getUser)),
-                dbRequestCaller.execute(new Request(username, DbCalls.removeUser))
+                dbRequestCaller.execute(new Request(DbCalls.getUser, username)),
+                dbRequestCaller.execute(new Request(DbCalls.removeUser, username))
         );
 
         for (Status status : resultList) {
@@ -49,16 +49,16 @@ public class TestDBCalls {
         Status status = dbRequestCaller.execute(new Request(DbCalls.createUser, username, password));
         Assumptions.assumeTrue(Status.OK == status);
 
-        status = dbRequestCaller.execute(new Request(username, DbCalls.getUser));
+        status = dbRequestCaller.execute(new Request(DbCalls.getUser, username));
         Assertions.assertEquals(Status.OK, status);
 
-        status = dbRequestCaller.execute(new Request("non-existent user", DbCalls.getUser));
+        status = dbRequestCaller.execute(new Request(DbCalls.getUser, "non-existent user"));
         Assertions.assertEquals(Status.NOT_FOUND, status);
 
-        status = dbRequestCaller.execute(new Request("", DbCalls.getUser));
+        status = dbRequestCaller.execute(new Request(DbCalls.getUser, ""));
         Assertions.assertEquals(Status.BAD_REQUEST, status);
 
-        status = dbRequestCaller.execute(new Request(" ", DbCalls.getUser));
+        status = dbRequestCaller.execute(new Request(DbCalls.getUser, " "));
         Assertions.assertEquals(Status.BAD_REQUEST, status);
     }
 
@@ -67,16 +67,16 @@ public class TestDBCalls {
         Status status = dbRequestCaller.execute(new Request(DbCalls.createUser, username, password));
         Assumptions.assumeTrue(status == Status.OK);
 
-        status = dbRequestCaller.execute(new Request(username, DbCalls.removeUser));
+        status = dbRequestCaller.execute(new Request(DbCalls.removeUser, username));
         Assertions.assertEquals(Status.OK, status);
 
-        status = dbRequestCaller.execute(new Request("", DbCalls.removeUser));
+        status = dbRequestCaller.execute(new Request(DbCalls.removeUser, ""));
         Assertions.assertEquals(Status.BAD_REQUEST, status);
 
-        status = dbRequestCaller.execute(new Request(" ", DbCalls.removeUser));
+        status = dbRequestCaller.execute(new Request(DbCalls.removeUser, " "));
         Assertions.assertEquals(Status.BAD_REQUEST, status);
 
-        status = dbRequestCaller.execute(new Request("non-existent user", DbCalls.removeUser));
+        status = dbRequestCaller.execute(new Request(DbCalls.removeUser, "non-existent user"));
         Assertions.assertEquals(Status.BAD_REQUEST, status);
     }
 

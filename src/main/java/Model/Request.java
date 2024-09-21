@@ -11,7 +11,7 @@ public class Request {
         this.call = call;
     }
 
-    public Request(String username, DbCalls call) {
+    public Request(DbCalls call, String username) {
         this.username = username;
         this.call = call;
     }
