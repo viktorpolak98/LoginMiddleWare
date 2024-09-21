@@ -5,7 +5,7 @@ public class Request {
     String password;
     DbCalls call;
 
-    public Request(String username, String password, DbCalls call) {
+    public Request(DbCalls call, String username, String password) {
         this.username = username;
         this.password = password;
         this.call = call;
