@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class DatabaseBase {
+public abstract class DatabaseBase {
     private final String dbUrl;
     private final String dbUser;
     private final String dbUserPassword;

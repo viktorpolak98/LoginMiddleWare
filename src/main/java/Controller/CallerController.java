@@ -1,11 +1,10 @@
 package Controller;
 
+import Controller.Database.APIKeyCaller;
 import Controller.Database.DbRequestCaller;
+import Controller.Handlers.AuthenticationHandler;
 import Controller.Handlers.RequestHandler;
-import Model.ContextBody;
-import Model.DbCalls;
-import Model.Status;
-import Model.Request;
+import Model.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.javalin.Javalin;
@@ -18,6 +17,7 @@ public class CallerController {
     private final int BAD_REQUEST_CODE = 400;
     private final String BAD_REQUEST_STR = "Bad request";
     private final RequestHandler requestHandler;
+    private final AuthenticationHandler authenticationHandler;
     private final ObjectMapper mapper = new ObjectMapper();
     private final Logger logger;
 
@@ -30,6 +30,7 @@ public class CallerController {
         app.start(8080);
 
         requestHandler = new RequestHandler(new DbRequestCaller(dbUrl, dbUser, dbUserPassword));
+        authenticationHandler = new AuthenticationHandler(new APIKeyCaller(dbUrl, dbUser, dbUserPassword));
     }
 
     public void initRoutes(Javalin app){
@@ -59,8 +60,11 @@ public class CallerController {
             return;
         }
 
-        //TODO: Implement check of APIKey and emailAddress
+        Status requestStatus = authenticationHandler.
+                handleRequest(new DbAPIKeyRequest(DbAPIKeyCalls.AuthenticateKey, contextBody.getEmailAddress(),
+                        contextBody.getAPIKey()));
 
+        setResponse(requestStatus, context);
     }
 
     private void updatePassword(Context context) throws JsonProcessingException {
