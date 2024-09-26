@@ -4,8 +4,10 @@ import Model.DbAPIKeyRequest;
 import Model.Status;
 import org.jetbrains.annotations.Nullable;
 
+import java.sql.CallableStatement;
 import java.sql.Date;
 import java.sql.SQLException;
+import java.sql.Types;
 
 public class APIKeyCaller extends DatabaseBase {
 
@@ -37,8 +39,27 @@ public class APIKeyCaller extends DatabaseBase {
     }
 
     private Status AuthenticateKey(String emailAddress, String APIKey) {
-        //TODO: Implement
-        return Status.NOT_FOUND;
+        if (isInputInvalid(emailAddress, APIKey)){
+            return Status.BAD_REQUEST;
+        }
+
+        try (CallableStatement statement = getConnection().prepareCall("{call AuthenticateAPIKey(?,?)}")) {
+            statement.setString(1, emailAddress);
+            statement.setString(2, APIKey);
+            statement.registerOutParameter(3, Types.BIT);
+
+            statement.execute();
+
+            if (!statement.getBoolean(3)){
+                return Status.UNAUTHORIZED;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return Status.INTERNAL_SERVER_ERROR;
+        }
+
+        return Status.OK;
     }
 
     private Status invalidateKey(String emailAddress, String APIKey) {
