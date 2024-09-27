@@ -9,7 +9,7 @@ GO
 
 
 
-CREATE procedure [dbo].[InvalidateKey] @APIKey nvarchar(195), @EmailAddress nvarchar(255)
+CREATE procedure [dbo].[InvalidateKey] @EmailAddress nvarchar(255), @APIKey nvarchar(195)
 As
     DECLARE @yesterday date = DATEADD(day, -1, CAST(GETDATE() AS date));
 	DECLARE @hashedKey nvarchar(195) = HASHBYTES('SHA2_512', @APIKey);

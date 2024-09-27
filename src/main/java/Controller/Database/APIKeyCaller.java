@@ -43,7 +43,7 @@ public class APIKeyCaller extends DatabaseBase {
             return Status.BAD_REQUEST;
         }
 
-        try (CallableStatement statement = getConnection().prepareCall("{call AuthenticateAPIKey(?,?)}")) {
+        try (CallableStatement statement = getConnection().prepareCall("{call AuthenticateAPIKey(?,?,?)}")) {
             statement.setString(1, emailAddress);
             statement.setString(2, APIKey);
             statement.registerOutParameter(3, Types.BIT);

@@ -9,7 +9,7 @@ GO
 
 
 
-CREATE procedure [dbo].[CreateAPIKey] @APIUser nvarchar(255), @APIKey nvarchar(195), @ValidTo date
+CREATE procedure [dbo].[CreateAPIKey] @EmailAddress nvarchar(255), @APIKey nvarchar(195), @ValidTo date
 As
 Begin
 	declare @hashed_key varbinary(64);
@@ -18,6 +18,6 @@ Begin
 
 	SET @hashed_key = HASHBYTES('SHA2_512', @APIKey);
 
-insert into UserDb.dbo.APIKeys VALUES (@APIUser, @hashed_key, @ValidFrom, @ValidTo)
+insert into UserDb.dbo.APIKeys VALUES (@EmailAddress, @hashed_key, @ValidFrom, @ValidTo)
 end
 GO
