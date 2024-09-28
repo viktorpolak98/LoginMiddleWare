@@ -63,8 +63,26 @@ public class APIKeyCaller extends DatabaseBase {
     }
 
     private Status invalidateKey(String emailAddress, String APIKey) {
-        //TODO: Implement
-        return Status.NOT_FOUND;
+        if (isInputInvalid(emailAddress, APIKey)){
+            return Status.BAD_REQUEST;
+        }
+
+        try (CallableStatement statement = getConnection().prepareCall("{call InvalidateKey(?,?)}")) {
+            statement.setString(1, emailAddress);
+            statement.setString(2, APIKey);
+
+            statement.execute();
+
+            if (!statement.getResultSet().next()){
+                return Status.NOT_FOUND;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return Status.INTERNAL_SERVER_ERROR;
+        }
+
+        return Status.OK;
     }
 
     private Status createAPIKey(String emailAddress, String APIKey, @Nullable Date validTo) {
