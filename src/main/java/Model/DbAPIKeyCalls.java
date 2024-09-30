@@ -4,4 +4,5 @@ public enum DbAPIKeyCalls {
     CreateKey,
     AuthenticateKey,
     InvalidateKey,
+    CreateUser,
 }

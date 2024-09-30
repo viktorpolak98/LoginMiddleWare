@@ -108,4 +108,26 @@ public class APIKeyCaller extends DatabaseBase {
 
         return Status.OK;
     }
+
+    private Status createAPIUser(String emailAddress) {
+        if (isInputInvalid(emailAddress)){
+            return Status.BAD_REQUEST;
+        }
+
+        try (CallableStatement statement = getConnection().prepareCall("{call CreateAPIUser(?)}")) {
+            statement.setString(1, emailAddress);
+
+            statement.execute();
+
+            if (!statement.getResultSet().next()){
+                return Status.NOT_FOUND;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return Status.INTERNAL_SERVER_ERROR;
+        }
+
+        return Status.OK;
+    }
 }
