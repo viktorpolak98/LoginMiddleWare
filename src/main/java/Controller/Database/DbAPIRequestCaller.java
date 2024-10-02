@@ -9,9 +9,9 @@ import java.sql.Date;
 import java.sql.SQLException;
 import java.sql.Types;
 
-public class APIKeyCaller extends DatabaseBase {
+public class DbAPIRequestCaller extends DatabaseBase {
 
-    public APIKeyCaller(String dbUrl, String dbUser, String dbUserPassword){
+    public DbAPIRequestCaller(String dbUrl, String dbUser, String dbUserPassword){
         super(dbUrl, dbUser, dbUserPassword);
     }
 

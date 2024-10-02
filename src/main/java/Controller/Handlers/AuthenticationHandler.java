@@ -1,6 +1,6 @@
 package Controller.Handlers;
 
-import Controller.Database.APIKeyCaller;
+import Controller.Database.DbAPIRequestCaller;
 import Model.DbAPIKeyRequest;
 import Model.Status;
 import org.slf4j.Logger;
@@ -11,11 +11,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class AuthenticationHandler {
-    private final APIKeyCaller caller;
+    private final DbAPIRequestCaller caller;
     private final ExecutorService executorService = Executors.newCachedThreadPool();
     private final Logger logger;
 
-    public AuthenticationHandler(APIKeyCaller caller) {
+    public AuthenticationHandler(DbAPIRequestCaller caller) {
         logger = LoggerFactory.getLogger(AuthenticationHandler.class);
         this.caller = caller;
     }

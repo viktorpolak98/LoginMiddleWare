@@ -1,6 +1,6 @@
 package Controller;
 
-import Controller.Database.APIKeyCaller;
+import Controller.Database.DbAPIRequestCaller;
 import Controller.Database.DbRequestCaller;
 import Controller.Handlers.AuthenticationHandler;
 import Controller.Handlers.RequestHandler;
@@ -30,7 +30,7 @@ public class CallerController {
         app.start(8080);
 
         requestHandler = new RequestHandler(new DbRequestCaller(dbUrl, dbUser, dbUserPassword));
-        authenticationHandler = new AuthenticationHandler(new APIKeyCaller(dbUrl, dbUser, dbUserPassword));
+        authenticationHandler = new AuthenticationHandler(new DbAPIRequestCaller(dbUrl, dbUser, dbUserPassword));
     }
 
     public void initRoutes(Javalin app){
