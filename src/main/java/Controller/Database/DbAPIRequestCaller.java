@@ -26,6 +26,7 @@ public class DbAPIRequestCaller extends DatabaseBase {
             case CreateKey -> createAPIKey(request.getEmailAddress(), request.getAPIKey(), request.getValidTo());
             case AuthenticateKey -> AuthenticateKey(request.getEmailAddress(), request.getAPIKey());
             case InvalidateKey -> invalidateKey(request.getEmailAddress(), request.getAPIKey());
+            case CreateUser -> createAPIUser(request.getEmailAddress());
             default -> Status.NOT_FOUND;
         };
 

@@ -6,9 +6,14 @@ import java.sql.Date;
 
 public class DbAPIKeyRequest {
     private final String emailAddress;
-    private final String APIKey;
+    private String APIKey;
     private final DbAPIKeyCalls call;
     private Date validTo;
+
+    public DbAPIKeyRequest(DbAPIKeyCalls call, String emailAddress) {
+        this.emailAddress = emailAddress;
+        this.call = call;
+    }
 
     public DbAPIKeyRequest(DbAPIKeyCalls call, String emailAddress, String APIKey) {
         this.emailAddress = emailAddress;
