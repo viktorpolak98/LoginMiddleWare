@@ -7,7 +7,10 @@ import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 public class TestDBAuthenticationCalls {
 
@@ -27,7 +30,7 @@ public class TestDBAuthenticationCalls {
 
     @Test
     public void testAuthenticateAPIKey() {
-        Assumptions.assumeTrue(setUpUserAndKey());
+        Assumptions.assumeTrue(setUpUsersAndKeys());
 
         Status status = dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.AuthenticateKey, emailAddress, APIKey));
         Assertions.assertEquals(Status.OK, status);
@@ -36,6 +39,12 @@ public class TestDBAuthenticationCalls {
         Assertions.assertEquals(Status.BAD_REQUEST, status);
 
         status = dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.AuthenticateKey, emailAddress, ""));
+        Assertions.assertEquals(Status.BAD_REQUEST, status);
+
+        status = dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.AuthenticateKey, " ", APIKey));
+        Assertions.assertEquals(Status.BAD_REQUEST, status);
+
+        status = dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.AuthenticateKey, "", APIKey));
         Assertions.assertEquals(Status.BAD_REQUEST, status);
 
         status = dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.AuthenticateKey, emailAddress, "notAKey"));
@@ -48,18 +57,37 @@ public class TestDBAuthenticationCalls {
         Assertions.assertEquals(Status.UNAUTHORIZED, status);
     }
 
-    private boolean setUpUserAndKey() {
+    @Test
+    public void testCreateAPIUser() {
+        Status status = dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.CreateUser, emailAddress));
+        Assertions.assertEquals(Status.OK, status);
+
+        status = dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.CreateUser, emailAddress2));
+        Assertions.assertEquals(Status.OK, status);
+
+        status = dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.CreateUser, ""));
+        Assertions.assertEquals(Status.BAD_REQUEST, status);
+
+        status = dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.CreateUser, " "));
+        Assertions.assertEquals(Status.BAD_REQUEST, status);
+
+        status = dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.CreateUser, emailAddress));
+        Assertions.assertEquals(Status.BAD_REQUEST, status);
+
+    }
+
+    private boolean setUpUsersAndKeys() {
         Status user = dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.CreateUser, emailAddress));
         Status key = dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.CreateKey, emailAddress, APIKey));
 
         boolean user1Status = key == Status.OK && user == Status.OK;
 
         user = dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.CreateUser, emailAddress2));
-        key =  dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.CreateKey, emailAddress2, APIKey2));
+        key = dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.CreateKey, emailAddress2, APIKey2));
 
         boolean user2Status = key == Status.OK && user == Status.OK;
 
-        return  user1Status && user2Status;
+        return user1Status && user2Status;
     }
 
     private static void cleanUpDatabase() {
