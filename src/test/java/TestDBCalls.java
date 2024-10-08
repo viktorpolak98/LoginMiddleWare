@@ -175,7 +175,7 @@ public class TestDBCalls {
                 System.getenv("MockDbUser"), System.getenv("MockDbUserPassword"));
              Statement statement = con.createStatement()
         ) {
-            String drop = "DROP TABLE [dbo].[users]";
+            String drop = "DELETE FROM [dbo].[users]";
             statement.executeUpdate(drop);
 
         } catch (SQLException e) {
