@@ -95,7 +95,8 @@ public class TestDBAuthenticationCalls {
                 System.getenv("MockDbUser"), System.getenv("MockDbUserPassword"));
              Statement statement = con.createStatement()
         ) {
-            String drop = "DROP TABLE IF EXISTS [dbo].[APIKeys], [dbo].[APIUsers]";
+            String drop = "DELETE FROM [dbo].[APIKeys]; " +
+                    "DELETE FROM [dbo].[APIUsers]";
 
             statement.executeUpdate(drop);
 
