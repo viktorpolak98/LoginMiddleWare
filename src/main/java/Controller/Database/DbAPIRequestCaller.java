@@ -99,7 +99,7 @@ public class DbAPIRequestCaller extends DatabaseBase {
             statement.execute();
 
             if (!statement.getResultSet().next()){
-                return Status.NOT_FOUND;
+                return Status.BAD_REQUEST;
             }
 
         } catch (SQLException e) {
@@ -121,7 +121,7 @@ public class DbAPIRequestCaller extends DatabaseBase {
             statement.execute();
 
             if (!statement.getResultSet().next()){
-                return Status.NOT_FOUND;
+                return Status.BAD_REQUEST;
             }
 
         } catch (SQLException e) {
