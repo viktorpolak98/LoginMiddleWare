@@ -77,7 +77,7 @@ public class CallerController {
         }
 
         Status requestStatus = requestHandler.
-                performRequest(new Request(DbCalls.updatePassword, contextBody.getUsername(), contextBody.getPassword()
+                performRequest(new Request(DbCalls.UpdatePassword, contextBody.getUsername(), contextBody.getPassword()
                 ));
 
         setResponse(requestStatus, context);
@@ -93,7 +93,7 @@ public class CallerController {
         }
 
         Status requestStatus = requestHandler.
-                performRequest(new Request(DbCalls.removeUser, contextBody.getUsername()));
+                performRequest(new Request(DbCalls.RemoveUser, contextBody.getUsername()));
 
         setResponse(requestStatus, context);
     }
@@ -108,7 +108,7 @@ public class CallerController {
         }
 
         Status requestStatus = requestHandler.
-                performRequest(new Request(DbCalls.createUser, contextBody.getUsername(), contextBody.getPassword()
+                performRequest(new Request(DbCalls.CreateUser, contextBody.getUsername(), contextBody.getPassword()
                 ));
 
         setResponse(requestStatus, context);
@@ -124,7 +124,7 @@ public class CallerController {
         }
 
         Status requestStatus = requestHandler.
-                performRequest(new Request(DbCalls.authenticateUser, contextBody.getUsername(), contextBody.getPassword()
+                performRequest(new Request(DbCalls.AuthenticateUser, contextBody.getUsername(), contextBody.getPassword()
                 ));
 
         setResponse(requestStatus, context);
@@ -140,7 +140,7 @@ public class CallerController {
         }
 
         Status requestStatus = requestHandler.
-                performRequest(new Request(DbCalls.getUser, contextBody.getUsername()));
+                performRequest(new Request(DbCalls.GetUser, contextBody.getUsername()));
 
         setResponse(requestStatus, context);
     }

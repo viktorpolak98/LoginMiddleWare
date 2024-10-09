@@ -1,9 +1,9 @@
 package Model;
 
 public enum DbCalls {
-    createUser,
-    removeUser,
-    updatePassword,
-    getUser,
-    authenticateUser;
+    CreateUser,
+    RemoveUser,
+    UpdatePassword,
+    GetUser,
+    AuthenticateUser;
 }

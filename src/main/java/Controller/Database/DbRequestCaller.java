@@ -20,15 +20,15 @@ public class DbRequestCaller extends DatabaseBase {
             e.printStackTrace();
         }
         Status status = switch (request.getCall()) {
-            case createUser -> createUser(request.getUsername(), request.getPassword());
+            case CreateUser -> createUser(request.getUsername(), request.getPassword());
 
-            case removeUser -> removeUser(request.getUsername());
+            case RemoveUser -> removeUser(request.getUsername());
 
-            case updatePassword -> updatePassword(request.getUsername(), request.getPassword());
+            case UpdatePassword -> updatePassword(request.getUsername(), request.getPassword());
 
-            case getUser -> userExists(request.getUsername());
+            case GetUser -> userExists(request.getUsername());
 
-            case authenticateUser -> authenticate(request.getUsername(), request.getPassword());
+            case AuthenticateUser -> authenticate(request.getUsername(), request.getPassword());
 
             default -> Status.BAD_REQUEST;
         };
