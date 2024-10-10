@@ -85,9 +85,6 @@ public class TestDBCalls {
         Status status = dbRequestCaller.execute(new Request(DbCalls.CreateUser, username, password));
         Assertions.assertEquals(Status.OK, status);
 
-        status = dbRequestCaller.execute(new Request(DbCalls.CreateUser, username, password)); //User exists
-        Assertions.assertEquals(Status.BAD_REQUEST, status);
-
         status = dbRequestCaller.execute(new Request(DbCalls.CreateUser, null, password));
         Assertions.assertEquals(Status.BAD_REQUEST, status);
 
@@ -161,7 +158,7 @@ public class TestDBCalls {
     @Test
     public void testCreateExistingUser() {
         Status status = dbRequestCaller.execute(new Request(DbCalls.CreateUser, username, password));
-        Assertions.assertEquals(Status.OK, status);
+        Assumptions.assumeTrue(Status.OK == status);
 
         status = dbRequestCaller.execute(new Request(DbCalls.CreateUser, username, password));
         Assertions.assertEquals(Status.BAD_REQUEST, status);
