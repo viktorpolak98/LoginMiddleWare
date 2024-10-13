@@ -7,10 +7,7 @@ import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 public class TestDBAuthenticationCalls {
 
@@ -60,6 +57,34 @@ public class TestDBAuthenticationCalls {
         Assertions.assertEquals(Status.BAD_REQUEST, dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.CreateUser, " ")));
 
         Assertions.assertEquals(Status.BAD_REQUEST, dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.CreateUser, emailAddress)));
+    }
+
+    @Test
+    public void testCreateAPIKey() {
+        Assumptions.assumeTrue(Status.OK == dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.CreateUser, emailAddress)));
+
+        Assertions.assertEquals(Status.OK, dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.CreateKey, emailAddress, APIKey)));
+
+        Assertions.assertEquals(Status.OK, dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.CreateKey,
+                emailAddress, APIKey2, new Date(System.currentTimeMillis() + 100_000))));
+
+        Assertions.assertEquals(Status.BAD_REQUEST, dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.CreateKey, emailAddress, APIKey)));
+
+        Assertions.assertEquals(Status.BAD_REQUEST, dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.CreateKey, emailAddress2, APIKey)));
+
+        Assertions.assertEquals(Status.BAD_REQUEST, dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.CreateKey, emailAddress, "")));
+
+        Assertions.assertEquals(Status.BAD_REQUEST, dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.CreateKey, "", APIKey)));
+
+        Assertions.assertEquals(Status.BAD_REQUEST, dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.CreateKey, " ", APIKey)));
+
+        Assertions.assertEquals(Status.BAD_REQUEST, dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.CreateKey, emailAddress, " ")));
+
+        Assertions.assertEquals(Status.BAD_REQUEST, dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.CreateKey, null, null)));
+
+        Assertions.assertEquals(Status.BAD_REQUEST, dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.CreateKey, emailAddress, null)));
+
+        Assertions.assertEquals(Status.BAD_REQUEST, dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.CreateKey, null, APIKey)));
     }
 
     private boolean setUpUsersAndKeys() {
