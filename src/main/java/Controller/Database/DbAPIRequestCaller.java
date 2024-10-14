@@ -68,7 +68,7 @@ public class DbAPIRequestCaller extends DatabaseBase {
             return Status.BAD_REQUEST;
         }
 
-        try (CallableStatement statement = getConnection().prepareCall("{call InvalidateKey(?,?)}")) {
+        try (CallableStatement statement = getConnection().prepareCall("{call InvalidateAPIKey(?,?)}")) {
             statement.setString(1, emailAddress);
             statement.setString(2, APIKey);
 
