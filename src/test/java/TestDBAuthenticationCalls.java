@@ -29,6 +29,10 @@ public class TestDBAuthenticationCalls {
     public void testAuthenticateAPIKey() {
         Assumptions.assumeTrue(setupUsersAndKeys());
 
+        String invalidKey = "apikey";
+        Assumptions.assumeTrue(Status.OK == dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.CreateKey,
+                emailAddress, invalidKey, new Date(System.currentTimeMillis() - 500_000_000)))); //Invalid roughly 6 days ago
+
         Assertions.assertEquals(Status.OK, dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.AuthenticateKey, emailAddress, APIKey)));
 
         Assertions.assertEquals(Status.BAD_REQUEST, dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.AuthenticateKey, emailAddress, " ")));
@@ -41,9 +45,11 @@ public class TestDBAuthenticationCalls {
 
         Assertions.assertEquals(Status.UNAUTHORIZED, dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.AuthenticateKey, emailAddress, "notAKey")));
 
-        Assertions.assertEquals(Status.OK, dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.AuthenticateKey, "notAUser", APIKey)));
+        Assertions.assertEquals(Status.UNAUTHORIZED, dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.AuthenticateKey, "notAUser", APIKey)));
 
         Assertions.assertEquals(Status.UNAUTHORIZED, dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.AuthenticateKey, emailAddress, APIKey2)));
+
+        Assertions.assertEquals(Status.UNAUTHORIZED, dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.AuthenticateKey, emailAddress, invalidKey)));
     }
 
     @Test
