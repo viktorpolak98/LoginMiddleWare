@@ -2,10 +2,7 @@ import Controller.Database.DbAPIRequestCaller;
 import Model.DbAPIKeyCalls;
 import Model.DbAPIKeyRequest;
 import Model.Status;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Assumptions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.sql.*;
 
@@ -22,6 +19,11 @@ public class TestDBAuthenticationCalls {
         dbAPIRequestCaller = new DbAPIRequestCaller(System.getenv("MockDbUrl"),
                 System.getenv("MockDbUser"),
                 System.getenv("MockDbUserPassword"));
+        cleanUpDatabase();
+    }
+
+    @AfterEach
+    public void cleanup() {
         cleanUpDatabase();
     }
 

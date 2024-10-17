@@ -57,6 +57,7 @@ public class TestDBCalls {
         Assertions.assertEquals(Status.BAD_REQUEST, dbRequestCaller.execute(new Request(DbCalls.GetUser, " ")));
     }
 
+    //TODO: Change cases where user does not exist to NOT_FOUND
     @Test
     public void testRemoveCall() {
         Assumptions.assumeTrue(Status.OK == dbRequestCaller.execute(new Request(DbCalls.CreateUser, username, password)));
