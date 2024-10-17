@@ -47,9 +47,6 @@ public class DbRequestCaller extends DatabaseBase {
         if (isInputInvalid(username, password)) {
             return Status.BAD_REQUEST;
         }
-        if (userExists(username) != Status.NOT_FOUND) {
-            return Status.BAD_REQUEST;
-        }
 
         try (CallableStatement statement = getConnection().prepareCall("{call CreateUser(?,?)}")) {
             statement.setString(1, username);
@@ -62,6 +59,9 @@ public class DbRequestCaller extends DatabaseBase {
 
 
         } catch (SQLException e) {
+            if (e.getErrorCode() == DUPLICATE_KEY_ERROR_CODE) {
+                return Status.BAD_REQUEST;
+            }
             e.printStackTrace();
             return Status.INTERNAL_SERVER_ERROR;
         }
@@ -80,6 +80,7 @@ public class DbRequestCaller extends DatabaseBase {
             statement.execute();
 
             if (statement.getUpdateCount() != 1) {
+                //TODO: Change to NOT_FOUND
                 return Status.BAD_REQUEST;
             }
 

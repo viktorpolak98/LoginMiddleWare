@@ -74,7 +74,7 @@ public class DbAPIRequestCaller extends DatabaseBase {
 
             statement.execute();
 
-            if (!statement.getResultSet().next()){
+            if (statement.getUpdateCount() != 1){
                 return Status.NOT_FOUND;
             }
 
@@ -98,11 +98,15 @@ public class DbAPIRequestCaller extends DatabaseBase {
 
             statement.execute();
 
-            if (!statement.getResultSet().next()){
+            if (statement.getUpdateCount() != 1){
                 return Status.BAD_REQUEST;
             }
 
         } catch (SQLException e) {
+            if (e.getErrorCode() == DUPLICATE_KEY_ERROR_CODE){
+                //TODO: Replace with conflict
+                return Status.BAD_REQUEST;
+            }
             e.printStackTrace();
             return Status.INTERNAL_SERVER_ERROR;
         }
@@ -120,11 +124,15 @@ public class DbAPIRequestCaller extends DatabaseBase {
 
             statement.execute();
 
-            if (!statement.getResultSet().next()){
+            if (statement.getUpdateCount() != 1){
                 return Status.BAD_REQUEST;
             }
 
         } catch (SQLException e) {
+            if (e.getErrorCode() == DUPLICATE_KEY_ERROR_CODE){
+                //TODO: Replace with conflict
+                return Status.BAD_REQUEST;
+            }
             e.printStackTrace();
             return Status.INTERNAL_SERVER_ERROR;
         }

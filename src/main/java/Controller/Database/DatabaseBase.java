@@ -9,6 +9,8 @@ public abstract class DatabaseBase {
     private final String dbUser;
     private final String dbUserPassword;
     private Connection con;
+
+    protected static final int DUPLICATE_KEY_ERROR_CODE = 2627;
     public DatabaseBase(String dbUrl, String dbUser, String dbUserPassword){
         this.dbUrl = dbUrl;
         this.dbUser = dbUser;
