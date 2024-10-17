@@ -20,7 +20,7 @@ As
     FROM [dbo].APIKeys
     WHERE APIKey = @entered_hash
 
-    IF @entered_hash = @stored_hash AND @APIUser = @EmailAddress AND (@ValidTo <= GETDATE() OR @ValidTo IS NULL)
+    IF @entered_hash = @stored_hash AND @APIUser = @EmailAddress AND (@ValidTo >= GETDATE() OR @ValidTo IS NULL)
         SET @Is_valid = 1;
     ELSE
         SET @Is_valid = 0;
