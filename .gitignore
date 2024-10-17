@@ -87,4 +87,5 @@ nb-configuration.xml
 ## Cache file
 ##############################
 utilFiles/cache.txt
+.run
 
