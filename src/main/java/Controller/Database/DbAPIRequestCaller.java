@@ -104,14 +104,13 @@ public class DbAPIRequestCaller extends DatabaseBase {
 
         } catch (SQLException e) {
             if (e.getErrorCode() == DUPLICATE_KEY_ERROR_CODE){
-                //TODO: Replace with conflict
-                return Status.BAD_REQUEST;
+                return Status.CONFLICT;
             }
             e.printStackTrace();
             return Status.INTERNAL_SERVER_ERROR;
         }
 
-        return Status.OK;
+        return Status.CREATED;
     }
 
     private Status createAPIUser(String emailAddress) {
@@ -130,13 +129,12 @@ public class DbAPIRequestCaller extends DatabaseBase {
 
         } catch (SQLException e) {
             if (e.getErrorCode() == DUPLICATE_KEY_ERROR_CODE){
-                //TODO: Replace with conflict
-                return Status.BAD_REQUEST;
+                return Status.CONFLICT;
             }
             e.printStackTrace();
             return Status.INTERNAL_SERVER_ERROR;
         }
 
-        return Status.OK;
+        return Status.CREATED;
     }
 }

@@ -32,7 +32,7 @@ public class TestDBAuthenticationCalls {
         Assumptions.assumeTrue(setupUsersAndKeys());
 
         String invalidKey = "apikey";
-        Assumptions.assumeTrue(Status.OK == dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.CreateKey,
+        Assumptions.assumeTrue(Status.CREATED == dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.CreateKey,
                 emailAddress, invalidKey, new Date(System.currentTimeMillis() - 500_000_000)))); //Invalid roughly 6 days ago
 
         Assertions.assertEquals(Status.OK, dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.AuthenticateKey, emailAddress, APIKey)));
@@ -49,36 +49,37 @@ public class TestDBAuthenticationCalls {
 
         Assertions.assertEquals(Status.UNAUTHORIZED, dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.AuthenticateKey, "notAUser", APIKey)));
 
-        Assertions.assertEquals(Status.UNAUTHORIZED, dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.AuthenticateKey, emailAddress, APIKey2)));
+        Assertions.assertEquals(Status.UNAUTHORIZED, dbAPIRequestCaller.execute(
+                new DbAPIKeyRequest(DbAPIKeyCalls.AuthenticateKey, emailAddress, APIKey2))); //User does not own key
 
         Assertions.assertEquals(Status.UNAUTHORIZED, dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.AuthenticateKey, emailAddress, invalidKey)));
     }
 
     @Test
     public void testCreateAPIUser() {
-        Assertions.assertEquals(Status.OK, dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.CreateUser, emailAddress)));
+        Assertions.assertEquals(Status.CREATED, dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.CreateUser, emailAddress)));
 
-        Assertions.assertEquals(Status.OK, dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.CreateUser, emailAddress2)));
+        Assertions.assertEquals(Status.CREATED, dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.CreateUser, emailAddress2)));
 
         Assertions.assertEquals(Status.BAD_REQUEST, dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.CreateUser, "")));
 
         Assertions.assertEquals(Status.BAD_REQUEST, dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.CreateUser, " ")));
 
-        Assertions.assertEquals(Status.BAD_REQUEST, dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.CreateUser, emailAddress)));
+        Assertions.assertEquals(Status.CONFLICT, dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.CreateUser, emailAddress)));
     }
 
     @Test
     public void testCreateAPIKey() {
-        Assumptions.assumeTrue(Status.OK == dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.CreateUser, emailAddress)));
+        Assumptions.assumeTrue(Status.CREATED == dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.CreateUser, emailAddress)));
 
-        Assertions.assertEquals(Status.OK, dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.CreateKey, emailAddress, APIKey)));
+        Assertions.assertEquals(Status.CREATED, dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.CreateKey, emailAddress, APIKey)));
 
-        Assertions.assertEquals(Status.OK, dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.CreateKey,
+        Assertions.assertEquals(Status.CREATED, dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.CreateKey,
                 emailAddress, APIKey2, new Date(System.currentTimeMillis()))));
 
-        Assertions.assertEquals(Status.BAD_REQUEST, dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.CreateKey, emailAddress, APIKey)));
+        Assertions.assertEquals(Status.CONFLICT, dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.CreateKey, emailAddress, APIKey)));
 
-        Assertions.assertEquals(Status.BAD_REQUEST, dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.CreateKey, emailAddress2, APIKey)));
+        Assertions.assertEquals(Status.CONFLICT, dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.CreateKey, emailAddress2, APIKey)));
 
         Assertions.assertEquals(Status.BAD_REQUEST, dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.CreateKey, emailAddress, "")));
 
@@ -122,12 +123,12 @@ public class TestDBAuthenticationCalls {
         Status user = dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.CreateUser, emailAddress));
         Status key = dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.CreateKey, emailAddress, APIKey));
 
-        boolean user1Status = key == Status.OK && user == Status.OK;
+        boolean user1Status = key == Status.CREATED && user == Status.CREATED;
 
         user = dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.CreateUser, emailAddress2));
         key = dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.CreateKey, emailAddress2, APIKey2));
 
-        boolean user2Status = key == Status.OK && user == Status.OK;
+        boolean user2Status = key == Status.CREATED && user == Status.CREATED;
 
         return user1Status && user2Status;
     }

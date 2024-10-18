@@ -31,8 +31,9 @@ public class TestDBCalls {
 
     @Test
     public void testAllCalls() {
+        Assertions.assertEquals(Status.CREATED, dbRequestCaller.execute(new Request(DbCalls.CreateUser, username, password)));
+
         List<Status> resultList = List.of(
-                dbRequestCaller.execute(new Request(DbCalls.CreateUser, username, password)),
                 dbRequestCaller.execute(new Request(DbCalls.AuthenticateUser, username, password)),
                 dbRequestCaller.execute(new Request(DbCalls.UpdatePassword, username, "new_" + password)),
                 dbRequestCaller.execute(new Request(DbCalls.GetUser, username)),
@@ -46,7 +47,7 @@ public class TestDBCalls {
 
     @Test
     public void testGetCall() {
-        Assumptions.assumeTrue(Status.OK == dbRequestCaller.execute(new Request(DbCalls.CreateUser, username, password)));
+        Assumptions.assumeTrue(Status.CREATED == dbRequestCaller.execute(new Request(DbCalls.CreateUser, username, password)));
 
         Assertions.assertEquals(Status.OK, dbRequestCaller.execute(new Request(DbCalls.GetUser, username)));
 
@@ -57,10 +58,9 @@ public class TestDBCalls {
         Assertions.assertEquals(Status.BAD_REQUEST, dbRequestCaller.execute(new Request(DbCalls.GetUser, " ")));
     }
 
-    //TODO: Change cases where user does not exist to NOT_FOUND
     @Test
     public void testRemoveCall() {
-        Assumptions.assumeTrue(Status.OK == dbRequestCaller.execute(new Request(DbCalls.CreateUser, username, password)));
+        Assumptions.assumeTrue(Status.CREATED == dbRequestCaller.execute(new Request(DbCalls.CreateUser, username, password)));
 
         Assertions.assertEquals(Status.OK, dbRequestCaller.execute(new Request(DbCalls.RemoveUser, username)));
 
@@ -68,12 +68,12 @@ public class TestDBCalls {
 
         Assertions.assertEquals(Status.BAD_REQUEST, dbRequestCaller.execute(new Request(DbCalls.RemoveUser, " ")));
 
-        Assertions.assertEquals(Status.BAD_REQUEST, dbRequestCaller.execute(new Request(DbCalls.RemoveUser, "non-existent user")));
+        Assertions.assertEquals(Status.NOT_FOUND, dbRequestCaller.execute(new Request(DbCalls.RemoveUser, "non-existent user")));
     }
 
     @Test
     public void testCreateCall() {
-        Assertions.assertEquals(Status.OK, dbRequestCaller.execute(new Request(DbCalls.CreateUser, username, password)));
+        Assertions.assertEquals(Status.CREATED, dbRequestCaller.execute(new Request(DbCalls.CreateUser, username, password)));
 
         Assertions.assertEquals(Status.BAD_REQUEST, dbRequestCaller.execute(new Request(DbCalls.CreateUser, null, password)));
 
@@ -88,7 +88,7 @@ public class TestDBCalls {
 
     @Test
     public void testUpdateCall() {
-        Assumptions.assumeTrue(Status.OK == dbRequestCaller.execute(new Request(DbCalls.CreateUser, username, password)));
+        Assumptions.assumeTrue(Status.CREATED == dbRequestCaller.execute(new Request(DbCalls.CreateUser, username, password)));
 
         Assertions.assertEquals(Status.OK, dbRequestCaller.execute(new Request(DbCalls.UpdatePassword, username, "new_" + password)));
 
@@ -107,7 +107,7 @@ public class TestDBCalls {
 
     @Test
     public void testAuthenticateCall() {
-        Assumptions.assumeTrue(Status.OK == dbRequestCaller.execute(new Request(DbCalls.CreateUser, username, password)));
+        Assumptions.assumeTrue(Status.CREATED == dbRequestCaller.execute(new Request(DbCalls.CreateUser, username, password)));
 
         Assertions.assertEquals(Status.OK, dbRequestCaller.execute(new Request(DbCalls.AuthenticateUser, username, password)));
 
@@ -126,11 +126,11 @@ public class TestDBCalls {
 
     @Test
     public void testCreateExistingUser() {
-        Assumptions.assumeTrue(Status.OK == dbRequestCaller.execute(new Request(DbCalls.CreateUser, username, password)));
+        Assumptions.assumeTrue(Status.CREATED == dbRequestCaller.execute(new Request(DbCalls.CreateUser, username, password)));
 
-        Assertions.assertEquals(Status.BAD_REQUEST, dbRequestCaller.execute(new Request(DbCalls.CreateUser, username, password)));
+        Assertions.assertEquals(Status.CONFLICT, dbRequestCaller.execute(new Request(DbCalls.CreateUser, username, password)));
 
-        Assertions.assertEquals(Status.BAD_REQUEST, dbRequestCaller.execute(new Request(DbCalls.CreateUser, username, "new_" + password)));
+        Assertions.assertEquals(Status.CONFLICT, dbRequestCaller.execute(new Request(DbCalls.CreateUser, username, "new_" + password)));
     }
 
     private static void cleanUpDatabase() {

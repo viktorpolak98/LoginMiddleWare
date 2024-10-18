@@ -60,13 +60,13 @@ public class DbRequestCaller extends DatabaseBase {
 
         } catch (SQLException e) {
             if (e.getErrorCode() == DUPLICATE_KEY_ERROR_CODE) {
-                return Status.BAD_REQUEST;
+                return Status.CONFLICT;
             }
             e.printStackTrace();
             return Status.INTERNAL_SERVER_ERROR;
         }
 
-        return Status.OK;
+        return Status.CREATED;
     }
 
     private Status removeUser(String username) {
@@ -80,8 +80,7 @@ public class DbRequestCaller extends DatabaseBase {
             statement.execute();
 
             if (statement.getUpdateCount() != 1) {
-                //TODO: Change to NOT_FOUND
-                return Status.BAD_REQUEST;
+                return Status.NOT_FOUND;
             }
 
         } catch (SQLException e) {
