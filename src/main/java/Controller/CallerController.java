@@ -14,8 +14,6 @@ import org.slf4j.LoggerFactory;
 
 
 public class CallerController {
-    private final int BAD_REQUEST_CODE = 400;
-    private final String BAD_REQUEST_STR = "Bad request";
     private final RequestHandler requestHandler;
     private final AuthenticationHandler authenticationHandler;
     private final ObjectMapper mapper = new ObjectMapper();
@@ -56,7 +54,7 @@ public class CallerController {
 
 
         if (invalidCall(contextBody.getEmailAddress(), contextBody.getAPIKey())){
-            context.status(BAD_REQUEST_CODE).result(BAD_REQUEST_STR);
+            setResponse(Status.BAD_REQUEST, context);
             return;
         }
 
@@ -72,7 +70,7 @@ public class CallerController {
 
         if (invalidCall(contextBody.getUsername(), contextBody.getPassword())){
             logger.warn("Update password failed due to bad request");
-            context.status(BAD_REQUEST_CODE).result(BAD_REQUEST_STR);
+            setResponse(Status.BAD_REQUEST, context);
             return;
         }
 
@@ -88,7 +86,7 @@ public class CallerController {
 
         if (invalidCall(contextBody.getUsername())){
             logger.warn("Remove user failed due to bad request");
-            context.status(BAD_REQUEST_CODE).result(BAD_REQUEST_STR);
+            setResponse(Status.BAD_REQUEST, context);
             return;
         }
 
@@ -103,7 +101,7 @@ public class CallerController {
 
         if (invalidCall(contextBody.getUsername(), contextBody.getPassword())){
             logger.warn("Create user failed due to bad request");
-            context.status(BAD_REQUEST_CODE).result(BAD_REQUEST_STR);
+            setResponse(Status.BAD_REQUEST, context);
             return;
         }
 
@@ -119,7 +117,7 @@ public class CallerController {
 
         if (invalidCall(contextBody.getUsername(), contextBody.getPassword())){
             logger.warn("Authentication failed due to bad request");
-            context.status(BAD_REQUEST_CODE).result(BAD_REQUEST_STR);
+            setResponse(Status.BAD_REQUEST, context);
             return;
         }
 
@@ -135,7 +133,7 @@ public class CallerController {
 
         if (invalidCall(contextBody.getUsername())){
             logger.warn("Get user failed due to bad request");
-            context.status(BAD_REQUEST_CODE).result(BAD_REQUEST_STR);
+            setResponse(Status.BAD_REQUEST, context);
             return;
         }
 
@@ -146,24 +144,7 @@ public class CallerController {
     }
 
     private void setResponse(Status status, Context context) {
-        String INTERNAL_SERVER_ERROR_STR = "Request failed due to internal server error";
-        int INTERNAL_SERVER_ERROR_CODE = 500;
-
-        String OK_STR = "OK";
-        int OK_CODE = 200;
-
-        String NOT_FOUND_STR = "Not found";
-        int NOT_FOUND_CODE = 404;
-
-        String UNAUTHORIZED_STR = "Unauthorized";
-        int UNAUTHORIZED_CODE = 401;
-        switch (status){
-            case INTERNAL_SERVER_ERROR -> context.status(INTERNAL_SERVER_ERROR_CODE).result(INTERNAL_SERVER_ERROR_STR);
-            case BAD_REQUEST -> context.status(BAD_REQUEST_CODE).result(BAD_REQUEST_STR);
-            case NOT_FOUND -> context.status(NOT_FOUND_CODE).result(NOT_FOUND_STR);
-            case OK -> context.status(OK_CODE).result(OK_STR);
-            case UNAUTHORIZED -> context.status(UNAUTHORIZED_CODE).result(UNAUTHORIZED_STR);
-        }
+        context.status(status.getCode()).result(status.getMessage());
     }
 
     private boolean invalidCall(String... params) {
