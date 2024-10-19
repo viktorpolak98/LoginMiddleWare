@@ -3,7 +3,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 
-public class TestGetEndpoint extends EndpointParent {
+public class TestGetUserEndpoint extends EndpointParent {
 
     @Test
     public void testGetSingleExistingUser() {

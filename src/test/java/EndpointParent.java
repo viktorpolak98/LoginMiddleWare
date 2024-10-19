@@ -54,7 +54,9 @@ public abstract class EndpointParent {
                 System.getenv("MockDbUser"), System.getenv("MockDbUserPassword"));
              Statement statement = con.createStatement()
         ) {
-            String drop = "DELETE FROM [dbo].[users]";
+            String drop = "DELETE FROM [dbo].[users];" +
+                    "DELETE FROM [dbo].[APIKeys]; " +
+                    "DELETE FROM [dbo].[APIUsers]";
             statement.executeUpdate(drop);
 
         } catch (SQLException e) {

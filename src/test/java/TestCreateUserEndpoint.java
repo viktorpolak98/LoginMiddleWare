@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TestCreateEndpoint extends EndpointParent {
+public class TestCreateUserEndpoint extends EndpointParent {
 
     @Test
     public void testCreateMultipleUsers() {

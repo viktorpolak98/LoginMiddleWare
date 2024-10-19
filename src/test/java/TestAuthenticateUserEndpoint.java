@@ -1,7 +1,7 @@
 import Util.User;
 import org.junit.jupiter.api.*;
 
-public class TestAuthenticateEndpoint extends EndpointParent {
+public class TestAuthenticateUserEndpoint extends EndpointParent {
 
     @Test
     public void testAuthenticateUser() {

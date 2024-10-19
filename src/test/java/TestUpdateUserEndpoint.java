@@ -3,7 +3,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 
-public class TestUpdateEndpoint extends EndpointParent {
+public class TestUpdateUserEndpoint extends EndpointParent {
 
     @Test
     public void testUpdatePasswordSingleUser(){

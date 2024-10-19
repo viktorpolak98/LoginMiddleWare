@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TestDeleteEndpoint extends EndpointParent {
+public class TestDeleteUserEndpoint extends EndpointParent {
 
     @Test
     public void testRemoveSingleExistingUser() {
