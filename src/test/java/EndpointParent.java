@@ -45,6 +45,18 @@ public abstract class EndpointParent {
         return "HTTP/1.0 404 Not found";
     }
 
+    protected String getHTTP_201(){
+        return "HTTP/1.0 201 Created";
+    }
+
+    protected String getHTTP_409(){
+        return "HTTP/1.0 409 Conflict";
+    }
+
+    protected String getHTTP_401(){
+        return "HTTP/1.0 401 Unauthorized";
+    }
+
     protected Calls getCalls() {
         return calls;
     }

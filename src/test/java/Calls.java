@@ -15,35 +15,35 @@ class Calls {
     }
 
     protected String createUser(String username, String password) {
-        String endpoint = String.format("/create-user/%s/%s", username, password);
+        String endpoint = String.format("/v1/create-user/%s/%s", username, password);
         setUpConnectionAndURL(endpoint, "POST");
 
         return makeConnection();
     }
 
     protected String removeUser(String username) {
-        String endpoint = String.format("/remove/%s", username);
+        String endpoint = String.format("/v1/remove/%s", username);
         setUpConnectionAndURL(endpoint, "DELETE");
 
         return makeConnection();
     }
 
     protected String getUser(String username) {
-        String endpoint = String.format("/user/%s", username);
+        String endpoint = String.format("/v1/user/%s", username);
         setUpConnectionAndURL(endpoint, "GET");
 
         return makeConnection();
     }
 
     protected String authenticateUser(String username, String password) {
-        String endpoint = String.format("/authenticate/%s/%s", username, password);
+        String endpoint = String.format("/v1/authenticate/%s/%s", username, password);
         setUpConnectionAndURL(endpoint, "GET");
 
         return makeConnection();
     }
 
     protected String updateUserPassword(String username, String password) {
-        String endpoint = String.format("/authenticate/%s/%s", username, password);
+        String endpoint = String.format("/v1/authenticate/%s/%s", username, password);
         setUpConnectionAndURL(endpoint, "PATCH");
 
         return makeConnection();
