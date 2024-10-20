@@ -1,19 +1,20 @@
 package Model;
 
 public enum Status {
-    OK(),
-    BAD_REQUEST(),
-    INTERNAL_SERVER_ERROR(),
-    NOT_FOUND(),
-    UNAUTHORIZED(),
-    CREATED(),
-    CONFLICT();
+    OK(200, "OK"),
+    BAD_REQUEST(400, "Bad request"),
+    INTERNAL_SERVER_ERROR(500, "Request failed due to internal server error"),
+    NOT_FOUND(404, "Not found"),
+    UNAUTHORIZED(401, "Unauthorized"),
+    CREATED(201, "Created"),
+    CONFLICT(409, "Conflict");
 
-    private int code;
-    private String message;
+    private final int code;
+    private final String message;
 
-    private Status(){
-        setCodeAndMessage(this);
+    private Status(int code, String message){
+        this.code = code;
+        this.message = message;
     }
 
     public int getCode(){
@@ -22,38 +23,5 @@ public enum Status {
 
     public String getMessage(){
         return message;
-    }
-
-    private void setCodeAndMessage(Status status) {
-        switch (status) {
-            case OK -> {
-                code = 200;
-                message = "OK";
-            }
-            case BAD_REQUEST -> {
-                code = 400;
-                message = "Bad request";
-            }
-            case INTERNAL_SERVER_ERROR -> {
-                code = 500;
-                message = "Request failed due to internal server error";
-            }
-            case NOT_FOUND -> {
-                code = 404;
-                message = "Not found";
-            }
-            case UNAUTHORIZED -> {
-                code = 401;
-                message = "Unauthorized";
-            }
-            case CREATED -> {
-                code = 201;
-                message = "Created";
-            }
-            case CONFLICT -> {
-                code = 409;
-                message = "Conflict";
-            }
-        }
     }
 }
