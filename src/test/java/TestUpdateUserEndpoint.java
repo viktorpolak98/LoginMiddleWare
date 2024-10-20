@@ -9,7 +9,7 @@ public class TestUpdateUserEndpoint extends EndpointParent {
     public void testUpdatePasswordSingleUser(){
         User user = getUsers().get(0);
         String response = getCalls().createUser(user.getUsername(), user.getPassword());
-        Assumptions.assumeTrue(response.equals(getHTTP_200()));
+        Assumptions.assumeTrue(response.equals(getHTTP_201()));
 
         response = getCalls().updateUserPassword(user.getUsername(), "New_password");
         Assertions.assertEquals(getHTTP_200(), response);
@@ -57,7 +57,7 @@ public class TestUpdateUserEndpoint extends EndpointParent {
     public void testUpdatePasswordSamePassword(){
         User user = getUsers().get(0);
         String response = getCalls().createUser(user.getUsername(), user.getPassword());
-        Assumptions.assumeTrue(response.equals(getHTTP_200()));
+        Assumptions.assumeTrue(response.equals(getHTTP_201()));
 
         response = getCalls().updateUserPassword(user.getUsername(), user.getPassword());
         Assertions.assertEquals(response, getHTTP_200());
@@ -67,12 +67,12 @@ public class TestUpdateUserEndpoint extends EndpointParent {
     public void testUpdatePasswordForRemovedUser() {
         User user = getUsers().get(0);
         String response = getCalls().createUser(user.getUsername(), user.getPassword());
-        Assumptions.assumeTrue(response.equals(getHTTP_200()));
+        Assumptions.assumeTrue(response.equals(getHTTP_201()));
 
         response = getCalls().removeUser(user.getUsername());
         Assumptions.assumeTrue(response.equals(getHTTP_200()));
 
         response = getCalls().updateUserPassword(user.getUsername(), "new_" + user.getPassword());
-        Assertions.assertEquals(response, getHTTP_400());
+        Assertions.assertEquals(response, getHTTP_404());
     }
 }

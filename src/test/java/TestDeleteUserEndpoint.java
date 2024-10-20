@@ -13,7 +13,7 @@ public class TestDeleteUserEndpoint extends EndpointParent {
         User user = getUsers().get(0);
         //Create user to be deleted
         String response = getCalls().createUser(user.getUsername(), user.getPassword());
-        Assumptions.assumeTrue(response.equals(getHTTP_200()));
+        Assumptions.assumeTrue(response.equals(getHTTP_201()));
 
         //Remove created user
         response = getCalls().removeUser(user.getUsername());
@@ -31,7 +31,7 @@ public class TestDeleteUserEndpoint extends EndpointParent {
         }
 
         for (String result : results) {
-            Assumptions.assumeTrue(result.equals(getHTTP_200()));
+            Assumptions.assumeTrue(result.equals(getHTTP_201()));
         }
 
         for (User user : getUsers()) {
@@ -62,16 +62,23 @@ public class TestDeleteUserEndpoint extends EndpointParent {
         User user = getUsers().get(0);
 
         String response = getCalls().createUser(user.getUsername(), user.getPassword());
-        Assumptions.assumeTrue(response.equals(getHTTP_200()));
+        Assumptions.assumeTrue(response.equals(getHTTP_201()));
 
         response = getCalls().removeUser(user.getUsername());
         Assumptions.assumeTrue(response.equals(getHTTP_200()));
 
         response = getCalls().createUser(user.getUsername(), user.getPassword());
-        Assumptions.assumeTrue(response.equals(getHTTP_200()));
+        Assumptions.assumeTrue(response.equals(getHTTP_201()));
 
         response = getCalls().removeUser(user.getUsername());
         Assertions.assertEquals(getHTTP_200(), response);
+    }
+
+    @Test
+    public void testRemoveNonExistentUser() {
+        String response = getCalls().removeUser("user");
+
+        Assertions.assertEquals(getHTTP_404(), response);
     }
 
 }

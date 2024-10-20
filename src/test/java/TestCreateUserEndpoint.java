@@ -20,7 +20,7 @@ public class TestCreateUserEndpoint extends EndpointParent {
         }
 
         for (String result : results) {
-            Assertions.assertEquals(getHTTP_200(), result);
+            Assertions.assertEquals(getHTTP_201(), result);
         }
     }
 
@@ -29,7 +29,7 @@ public class TestCreateUserEndpoint extends EndpointParent {
         User user = getUsers().get(0);
         String response = getCalls().createUser(user.getUsername(), user.getPassword());
 
-        Assertions.assertEquals(getHTTP_200(), response);
+        Assertions.assertEquals(getHTTP_201(), response);
     }
 
     @Test
@@ -63,10 +63,10 @@ public class TestCreateUserEndpoint extends EndpointParent {
         User user = getUsers().get(0);
 
         String response = getCalls().createUser(user.getUsername(), user.getPassword());
-        Assumptions.assumeTrue(response.equals(getHTTP_200()));
+        Assumptions.assumeTrue(response.equals(getHTTP_201()));
 
         response = getCalls().createUser(user.getUsername(), user.getPassword());
-        Assertions.assertEquals(getHTTP_400(), response);
+        Assertions.assertEquals(getHTTP_409(), response);
     }
 
     @Test
@@ -74,12 +74,12 @@ public class TestCreateUserEndpoint extends EndpointParent {
         User user = getUsers().get(0);
 
         String response = getCalls().createUser(user.getUsername(), user.getPassword());
-        Assumptions.assumeTrue(response.equals(getHTTP_200()));
+        Assumptions.assumeTrue(response.equals(getHTTP_201()));
 
         response = getCalls().removeUser(user.getUsername());
         Assumptions.assumeTrue(response.equals(getHTTP_200()));
 
         response = getCalls().createUser(user.getUsername(), user.getPassword());
-        Assertions.assertEquals(getHTTP_200(), response);
+        Assertions.assertEquals(getHTTP_201(), response);
     }
 }

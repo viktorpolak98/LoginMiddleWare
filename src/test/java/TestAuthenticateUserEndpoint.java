@@ -8,7 +8,7 @@ public class TestAuthenticateUserEndpoint extends EndpointParent {
         User user = getUsers().get(0);
 
         String response = getCalls().createUser(user.getUsername(), user.getPassword());
-        Assumptions.assumeTrue(response.equals(getHTTP_200()));
+        Assumptions.assumeTrue(response.equals(getHTTP_201()));
 
         response = getCalls().authenticateUser(user.getUsername(), user.getPassword());
         Assertions.assertEquals(getHTTP_200(), response);
@@ -19,7 +19,7 @@ public class TestAuthenticateUserEndpoint extends EndpointParent {
         User user = getUsers().get(0);
 
         String response = getCalls().createUser(user.getUsername(), user.getPassword());
-        Assumptions.assumeTrue(response.equals(getHTTP_200()));
+        Assumptions.assumeTrue(response.equals(getHTTP_201()));
 
         response = getCalls().authenticateUser(user.getUsername(), "invalid password");
         Assertions.assertEquals(getHTTP_400(), response);
@@ -31,13 +31,13 @@ public class TestAuthenticateUserEndpoint extends EndpointParent {
         User user2 = getUsers().get(1);
 
         String response = getCalls().createUser(user1.getUsername(), user1.getPassword());
-        Assumptions.assumeTrue(response.equals(getHTTP_200()));
+        Assumptions.assumeTrue(response.equals(getHTTP_201()));
 
         response = getCalls().createUser(user2.getUsername(), user2.getPassword());
-        Assumptions.assumeTrue(response.equals(getHTTP_200()));
+        Assumptions.assumeTrue(response.equals(getHTTP_201()));
 
         response = getCalls().authenticateUser(user1.getUsername(), user2.getPassword());
-        Assertions.assertEquals(getHTTP_400(), response);
+        Assertions.assertEquals(getHTTP_401(), response);
     }
 
     @Test
@@ -52,7 +52,7 @@ public class TestAuthenticateUserEndpoint extends EndpointParent {
         Assertions.assertEquals(getHTTP_400(), response);
 
         response = getCalls().authenticateUser("does not exist", "does not exist");
-        Assertions.assertEquals(getHTTP_400(), response);
+        Assertions.assertEquals(getHTTP_401(), response);
     }
 
     @Test
@@ -60,7 +60,7 @@ public class TestAuthenticateUserEndpoint extends EndpointParent {
         User user = getUsers().get(0);
 
         String response = getCalls().createUser(user.getUsername(), user.getPassword());
-        Assumptions.assumeTrue(response.equals(getHTTP_200()));
+        Assumptions.assumeTrue(response.equals(getHTTP_201()));
 
         response = getCalls().authenticateUser(user.getUsername(), null);
         Assertions.assertEquals(getHTTP_400(), response);

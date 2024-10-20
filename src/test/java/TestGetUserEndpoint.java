@@ -10,7 +10,7 @@ public class TestGetUserEndpoint extends EndpointParent {
         User user = getUsers().get(0);
         //Create user to be fetched
         String response = getCalls().createUser(user.getUsername(), user.getPassword());
-        Assumptions.assumeTrue(response.equals(getHTTP_200()));
+        Assumptions.assumeTrue(response.equals(getHTTP_201()));
 
         //Get user
         response = getCalls().getUser(user.getUsername());
@@ -40,7 +40,7 @@ public class TestGetUserEndpoint extends EndpointParent {
         User user = getUsers().get(0);
 
         String response = getCalls().createUser(user.getUsername(), user.getPassword());
-        Assumptions.assumeTrue(response.equals(getHTTP_200()));
+        Assumptions.assumeTrue(response.equals(getHTTP_201()));
 
         response = getCalls().removeUser(user.getUsername());
         Assumptions.assumeTrue(response.equals(getHTTP_200()));

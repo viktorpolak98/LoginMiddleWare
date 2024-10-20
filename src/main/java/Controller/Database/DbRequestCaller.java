@@ -103,7 +103,7 @@ public class DbRequestCaller extends DatabaseBase {
             statement.execute();
 
             if (statement.getUpdateCount() != 1) {
-                return Status.BAD_REQUEST;
+                return Status.NOT_FOUND;
             }
 
         } catch (SQLException e) {
