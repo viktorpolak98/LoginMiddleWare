@@ -34,15 +34,15 @@ public class CallerController {
     public void initRoutes(Javalin app){
         app.before(this::beforeRequest);
 
-        app.patch("/v1/update-password/{user}/{password}", this::updatePassword);
+        app.patch("/v1/update-password/", this::updatePassword);
 
-        app.delete("/v1/remove-user/{user}", this::removeUser);
+        app.delete("/v1/remove-user/", this::removeUser);
 
-        app.post("/v1/create-user/{user}/{password}", this::createUser);
+        app.post("/v1/create-user/", this::createUser);
 
-        app.get("/v1/authenticate/{user}/{password}", this::authenticate);
+        app.get("/v1/authenticate/", this::authenticate);
 
-        app.get("/v1/user/{user}", this::user);
+        app.get("/v1/user/", this::user);
 
 
     }
