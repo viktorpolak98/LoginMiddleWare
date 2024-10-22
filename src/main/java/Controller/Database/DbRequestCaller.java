@@ -26,7 +26,7 @@ public class DbRequestCaller extends DatabaseBase {
 
             case UpdatePassword -> updatePassword(request.getUsername(), request.getPassword());
 
-            case GetUser -> userExists(request.getUsername());
+            case GetUser -> getUser(request.getUsername());
 
             case AuthenticateUser -> authenticate(request.getUsername(), request.getPassword());
 
@@ -114,7 +114,7 @@ public class DbRequestCaller extends DatabaseBase {
         return Status.OK;
     }
 
-    private Status userExists(String username) {
+    private Status getUser(String username) {
         if (isInputInvalid(username)) {
             return Status.BAD_REQUEST;
         }
