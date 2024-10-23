@@ -12,6 +12,8 @@ import io.javalin.http.Context;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Objects;
+
 
 public class CallerController {
     private final RequestHandler requestHandler;
@@ -34,33 +36,32 @@ public class CallerController {
     public void initRoutes(Javalin app){
         app.before(this::beforeRequest);
 
-        app.patch("/v1/update-password/", this::updatePassword);
+        app.patch("/v1/update-password", this::updatePassword);
 
-        app.delete("/v1/remove-user/", this::removeUser);
+        app.delete("/v1/remove-user", this::removeUser);
 
-        app.post("/v1/create-user/", this::createUser);
+        app.post("/v1/create-user", this::createUser);
 
-        app.get("/v1/authenticate/", this::authenticate);
+        app.get("/v1/authenticate/{user}", this::authenticate);
 
-        app.get("/v1/user/", this::user);
-
+        app.get("/v1/get-user/{user}", this::user);
 
     }
 
-    private void beforeRequest(Context context) throws JsonProcessingException {
+    private void beforeRequest(Context context) {
         logger.info("Received call from: {}", context.host());
 
-        ContextBody contextBody = mapper.readValue(context.body(), ContextBody.class);
+        String emailAddress = context.header("EmailAddress");
+        String APIKey = context.header("APIKey");
 
-
-        if (invalidCall(contextBody.getEmailAddress(), contextBody.getAPIKey())){
+        if (invalidCall(emailAddress, APIKey)){
             setResponse(Status.BAD_REQUEST, context);
             return;
         }
 
         Status requestStatus = authenticationHandler.
-                handleRequest(new DbAPIKeyRequest(DbAPIKeyCalls.AuthenticateKey, contextBody.getEmailAddress(),
-                        contextBody.getAPIKey()));
+                handleRequest(new DbAPIKeyRequest(DbAPIKeyCalls.AuthenticateKey, emailAddress,
+                        APIKey));
 
         setResponse(requestStatus, context);
     }
@@ -112,33 +113,35 @@ public class CallerController {
         setResponse(requestStatus, context);
     }
 
-    private void authenticate(Context context) throws JsonProcessingException {
-        ContextBody contextBody = mapper.readValue(context.body(), ContextBody.class);
+    private void authenticate(Context context) {
+        String user = context.pathParam("user");
+        String authUsername = Objects.requireNonNull(context.basicAuthCredentials()).getUsername();
+        String authPassword = Objects.requireNonNull(context.basicAuthCredentials()).getPassword();
 
-        if (invalidCall(contextBody.getUsername(), contextBody.getPassword())){
+        if (invalidCall(user, authUsername, authPassword) || !user.equals(authUsername)){
             logger.warn("Authentication failed due to bad request");
             setResponse(Status.BAD_REQUEST, context);
             return;
         }
 
         Status requestStatus = requestHandler.
-                performRequest(new Request(DbCalls.AuthenticateUser, contextBody.getUsername(), contextBody.getPassword()
-                ));
+                performRequest(new Request(DbCalls.AuthenticateUser, authUsername, authPassword));
 
         setResponse(requestStatus, context);
     }
 
-    private void user(Context context) throws JsonProcessingException {
-        ContextBody contextBody = mapper.readValue(context.body(), ContextBody.class);
+    private void user(Context context) {
+        String user = context.pathParam("user");
 
-        if (invalidCall(contextBody.getUsername())){
+        if (invalidCall(user)){
             logger.warn("Get user failed due to bad request");
             setResponse(Status.BAD_REQUEST, context);
             return;
         }
 
+
         Status requestStatus = requestHandler.
-                performRequest(new Request(DbCalls.GetUser, contextBody.getUsername()));
+                performRequest(new Request(DbCalls.GetUser, user));
 
         setResponse(requestStatus, context);
     }
