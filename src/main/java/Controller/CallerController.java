@@ -50,20 +50,6 @@ public class CallerController {
 
     private void beforeRequest(Context context) {
         logger.info("Received call from: {}", context.host());
-
-        String emailAddress = context.header("EmailAddress");
-        String APIKey = context.header("APIKey");
-
-        if (invalidCall(emailAddress, APIKey)){
-            setResponse(Status.BAD_REQUEST, context);
-            return;
-        }
-
-        Status requestStatus = authenticationHandler.
-                handleRequest(new DbAPIKeyRequest(DbAPIKeyCalls.AuthenticateKey, emailAddress,
-                        APIKey));
-
-        setResponse(requestStatus, context);
     }
 
     private void updatePassword(Context context) throws JsonProcessingException {
@@ -154,8 +140,9 @@ public class CallerController {
         if (params == null) {
             return true;
         }
+
         for (String s : params) {
-            if (s.isBlank()) {
+            if (s==null || s.isBlank()) {
                 return true;
             }
         }

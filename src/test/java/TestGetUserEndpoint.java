@@ -54,16 +54,16 @@ public class TestGetUserEndpoint extends EndpointParent {
         User user = getUsers().get(0);
 
         String response = getCalls().createUser(user.getUsername(), user.getPassword());
-        Assumptions.assumeTrue(response.equals(getHTTP_200()));
+        Assumptions.assumeTrue(response.equals(getHTTP_201()));
 
         response = getCalls().getUser(user.getUsername());
         Assumptions.assumeTrue(response.equals(getHTTP_200()));
 
         response = getCalls().removeUser(user.getUsername());
-        Assumptions.assumeTrue(response.equals(getHTTP_200()));
+        Assumptions.assumeTrue(response.equals(getHTTP_200()),  " response: " + response);
 
         response = getCalls().createUser(user.getUsername(), user.getPassword());
-        Assumptions.assumeTrue(response.equals(getHTTP_200()));
+        Assumptions.assumeTrue(response.equals(getHTTP_201()));
 
         response = getCalls().getUser(user.getUsername());
         Assertions.assertEquals(getHTTP_200(), response);

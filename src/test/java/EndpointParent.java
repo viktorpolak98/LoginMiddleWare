@@ -34,27 +34,27 @@ public abstract class EndpointParent {
     }
 
     protected String getHTTP_200() {
-        return "HTTP/1.0 200 OK";
+        return "200 OK";
     }
 
     protected String getHTTP_400() {
-        return "HTTP/1.0 400 Bad request";
+        return "400 Bad request";
     }
 
     protected String getHTTP_404() {
-        return "HTTP/1.0 404 Not found";
+        return "404 Not found";
     }
 
     protected String getHTTP_201(){
-        return "HTTP/1.0 201 Created";
+        return "201 Created";
     }
 
     protected String getHTTP_409(){
-        return "HTTP/1.0 409 Conflict";
+        return "409 Conflict";
     }
 
     protected String getHTTP_401(){
-        return "HTTP/1.0 401 Unauthorized";
+        return "401 Unauthorized";
     }
 
     protected Calls getCalls() {
