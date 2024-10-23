@@ -49,7 +49,7 @@ public class CallerController {
     }
 
     private void beforeRequest(Context context) {
-        logger.info("Received call from: {}", context.host());
+        logger.info("Received call from: {} to endpoint: {}", context.host(), context.path());
     }
 
     private void updatePassword(Context context) throws JsonProcessingException {
