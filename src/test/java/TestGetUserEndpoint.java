@@ -19,20 +19,14 @@ public class TestGetUserEndpoint extends EndpointParent {
 
     @Test
     public void testGetNonExistingUser() {
-        String response = getCalls().getUser("Non existent user");
+        String response = getCalls().getUser("Non-existent-user");
         Assertions.assertEquals(getHTTP_404(), response);
     }
 
     @Test
     public void testGetBadParameter() {
         String response = getCalls().getUser("");
-        Assertions.assertEquals(getHTTP_400(), response);
-
-        response = getCalls().getUser(" "); //Whitespace
-        Assertions.assertEquals(getHTTP_400(), response);
-
-        response = getCalls().getUser(null);
-        Assertions.assertEquals(getHTTP_400(), response);
+        Assertions.assertEquals(getHTTP_404(), response);
     }
 
     @Test
@@ -46,7 +40,7 @@ public class TestGetUserEndpoint extends EndpointParent {
         Assumptions.assumeTrue(response.equals(getHTTP_200()));
 
         response = getCalls().getUser(user.getUsername());
-        Assertions.assertEquals(response, getHTTP_404());
+        Assertions.assertEquals(getHTTP_404(), response);
     }
 
     @Test

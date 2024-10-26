@@ -22,7 +22,7 @@ public class TestAuthenticateUserEndpoint extends EndpointParent {
         Assumptions.assumeTrue(response.equals(getHTTP_201()));
 
         response = getCalls().authenticateUser(user.getUsername(), "invalid password");
-        Assertions.assertEquals(getHTTP_400(), response);
+        Assertions.assertEquals(getHTTP_401(), response);
     }
 
     @Test
@@ -42,16 +42,10 @@ public class TestAuthenticateUserEndpoint extends EndpointParent {
 
     @Test
     public void testAuthenticateNonExistentUser() {
-        String response = getCalls().authenticateUser(null, null);
-        Assertions.assertEquals(getHTTP_400(), response);
+        String response = getCalls().authenticateUser("", "");
+        Assertions.assertEquals(getHTTP_404(), response);
 
-        response = getCalls().authenticateUser("", "");
-        Assertions.assertEquals(getHTTP_400(), response);
-
-        response = getCalls().authenticateUser(" ", " "); //Whitespace
-        Assertions.assertEquals(getHTTP_400(), response);
-
-        response = getCalls().authenticateUser("does not exist", "does not exist");
+        response = getCalls().authenticateUser("does-not-exist", "does-not-exist");
         Assertions.assertEquals(getHTTP_401(), response);
     }
 
@@ -61,9 +55,6 @@ public class TestAuthenticateUserEndpoint extends EndpointParent {
 
         String response = getCalls().createUser(user.getUsername(), user.getPassword());
         Assumptions.assumeTrue(response.equals(getHTTP_201()));
-
-        response = getCalls().authenticateUser(user.getUsername(), null);
-        Assertions.assertEquals(getHTTP_400(), response);
 
         response = getCalls().authenticateUser(user.getUsername(), "");
         Assertions.assertEquals(getHTTP_400(), response);

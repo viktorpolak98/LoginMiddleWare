@@ -53,9 +53,9 @@ class Calls {
     }
 
     protected String updateUserPassword(String username, String password) {
-        String endpoint = "/v1/authenticate";
+        String endpoint = "/v1/update-password";
         String body = formatBody(username, password);
-        HttpURLConnection connection = setUpConnectionAndURL(endpoint, "PATCH");
+        HttpURLConnection connection = setUpConnectionAndURL(endpoint, "PUT");
         writeToConnection(connection, body);
 
         return makeConnection(connection);

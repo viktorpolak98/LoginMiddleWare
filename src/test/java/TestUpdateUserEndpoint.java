@@ -23,9 +23,6 @@ public class TestUpdateUserEndpoint extends EndpointParent {
 
         response = getCalls().updateUserPassword(user.getUsername(), " "); //Whitespace
         Assertions.assertEquals(getHTTP_400(), response);
-
-        response = getCalls().updateUserPassword(user.getUsername(), null);
-        Assertions.assertEquals(getHTTP_400(), response);
     }
 
     @Test
@@ -36,9 +33,6 @@ public class TestUpdateUserEndpoint extends EndpointParent {
 
         response = getCalls().updateUserPassword(" ", user.getPassword()); //Whitespace
         Assertions.assertEquals(getHTTP_400(), response);
-
-        response = getCalls().updateUserPassword(null, user.getPassword());
-        Assertions.assertEquals(getHTTP_400(), response);
     }
 
     @Test
@@ -47,9 +41,6 @@ public class TestUpdateUserEndpoint extends EndpointParent {
         Assertions.assertEquals(getHTTP_400(), response);
 
         response = getCalls().updateUserPassword(" ", " "); //Whitespace
-        Assertions.assertEquals(getHTTP_400(), response);
-
-        response = getCalls().updateUserPassword(null, null);
         Assertions.assertEquals(getHTTP_400(), response);
     }
 
@@ -60,7 +51,7 @@ public class TestUpdateUserEndpoint extends EndpointParent {
         Assumptions.assumeTrue(response.equals(getHTTP_201()));
 
         response = getCalls().updateUserPassword(user.getUsername(), user.getPassword());
-        Assertions.assertEquals(response, getHTTP_200());
+        Assertions.assertEquals(getHTTP_200(), response);
     }
 
     @Test

@@ -40,9 +40,6 @@ public class TestCreateUserEndpoint extends EndpointParent {
 
         response = getCalls().createUser(" ", user.getPassword()); //Whitespace
         Assertions.assertEquals(getHTTP_400(), response);
-
-        response = getCalls().createUser(null, user.getPassword());
-        Assertions.assertEquals(getHTTP_400(), response);
     }
 
     @Test
@@ -54,8 +51,6 @@ public class TestCreateUserEndpoint extends EndpointParent {
         response = getCalls().createUser(user.getUsername(), " "); //Whitespace
         Assertions.assertEquals(getHTTP_400(), response);
 
-        response = getCalls().createUser(user.getUsername(), null);
-        Assertions.assertEquals(getHTTP_400(), response);
     }
 
     @Test

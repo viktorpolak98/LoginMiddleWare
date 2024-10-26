@@ -1,6 +1,8 @@
 import Controller.CallerController;
 import Util.User;
 import Util.XMLTestdataReader;
+import io.javalin.Javalin;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 
@@ -13,15 +15,22 @@ import java.util.List;
 public abstract class EndpointParent {
     private static List<User> users;
     private final Calls calls = new Calls();
+    private static Javalin app;
 
     @BeforeAll
     protected static void beforeTests() {
-        new CallerController(
+        app = Javalin.create();
+        new CallerController(app,
                 System.getenv("MockDbUrl"),
                 System.getenv("MockDbUser"),
                 System.getenv("MockDbUserPassword"));
         users = XMLTestdataReader.readUsers("src\\test\\java\\Testdata\\Testdata.xml");
         cleanUpDatabase();
+    }
+
+    @AfterAll
+    protected static void stop() {
+        app.stop();
     }
 
     @AfterEach
@@ -38,11 +47,11 @@ public abstract class EndpointParent {
     }
 
     protected String getHTTP_400() {
-        return "400 Bad request";
+        return "400 Bad Request";
     }
 
     protected String getHTTP_404() {
-        return "404 Not found";
+        return "404 Not Found";
     }
 
     protected String getHTTP_201(){

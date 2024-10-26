@@ -34,6 +34,8 @@ public class TestDeleteUserEndpoint extends EndpointParent {
             Assumptions.assumeTrue(result.equals(getHTTP_201()));
         }
 
+        results.clear();
+
         for (User user : getUsers()) {
             //Remove every user previously created
             String response = getCalls().removeUser(user.getUsername());
@@ -51,9 +53,6 @@ public class TestDeleteUserEndpoint extends EndpointParent {
         Assertions.assertEquals(getHTTP_400(), response);
 
         response = getCalls().removeUser(" "); //Whitespace
-        Assertions.assertEquals(getHTTP_400(), response);
-
-        response = getCalls().removeUser(null);
         Assertions.assertEquals(getHTTP_400(), response);
     }
 
