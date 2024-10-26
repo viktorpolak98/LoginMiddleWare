@@ -2,9 +2,9 @@ package Model;
 
 public enum Status {
     OK(200, "OK"),
-    BAD_REQUEST(400, "Bad request"),
-    INTERNAL_SERVER_ERROR(500, "Request failed due to internal server error"),
-    NOT_FOUND(404, "Not found"),
+    BAD_REQUEST(400, "Bad Request"),
+    INTERNAL_SERVER_ERROR(500, "Internal Server Error"),
+    NOT_FOUND(404, "Not Found"),
     UNAUTHORIZED(401, "Unauthorized"),
     CREATED(201, "Created"),
     CONFLICT(409, "Conflict");

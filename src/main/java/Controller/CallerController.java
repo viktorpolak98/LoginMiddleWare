@@ -22,6 +22,15 @@ public class CallerController {
     private final Logger logger;
 
 
+    //Inject app for testing purposes
+    public CallerController(Javalin app, String dbUrl, String dbUser, String dbUserPassword) {
+        logger = LoggerFactory.getLogger(CallerController.class);
+        initRoutes(app);
+        app.start(8080);
+
+        requestHandler = new RequestHandler(new DbRequestCaller(dbUrl, dbUser, dbUserPassword));
+        authenticationHandler = new AuthenticationHandler(new DbAPIRequestCaller(dbUrl, dbUser, dbUserPassword));
+    }
 
     public CallerController(String dbUrl, String dbUser, String dbUserPassword) {
         logger = LoggerFactory.getLogger(CallerController.class);
@@ -36,7 +45,7 @@ public class CallerController {
     public void initRoutes(Javalin app){
         app.before(this::beforeRequest);
 
-        app.patch("/v1/update-password", this::updatePassword);
+        app.put("/v1/update-password", this::updatePassword);
 
         app.delete("/v1/remove-user", this::removeUser);
 
