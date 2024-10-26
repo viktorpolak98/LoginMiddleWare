@@ -51,9 +51,9 @@ public class CallerController {
 
         app.post("/v1/create-user", this::createUser);
 
-        app.get("/v1/authenticate/{user}", this::authenticate);
+        app.get("/v1/authenticate/{user}", this::authenticateUser);
 
-        app.get("/v1/get-user/{user}", this::user);
+        app.get("/v1/get-user/{user}", this::getUser);
 
     }
 
@@ -108,7 +108,7 @@ public class CallerController {
         setResponse(requestStatus, context);
     }
 
-    private void authenticate(Context context) {
+    private void authenticateUser(Context context) {
         String user = context.pathParam("user");
         String authUsername = Objects.requireNonNull(context.basicAuthCredentials()).getUsername();
         String authPassword = Objects.requireNonNull(context.basicAuthCredentials()).getPassword();
@@ -125,7 +125,7 @@ public class CallerController {
         setResponse(requestStatus, context);
     }
 
-    private void user(Context context) {
+    private void getUser(Context context) {
         String user = context.pathParam("user");
 
         if (invalidCall(user)){
