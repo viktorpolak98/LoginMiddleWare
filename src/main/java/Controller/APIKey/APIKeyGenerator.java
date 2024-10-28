@@ -1,4 +1,4 @@
-package Controller;
+package Controller.APIKey;
 
 import java.util.Base64;
 import java.util.Random;
