@@ -113,6 +113,23 @@ public class DbAPIRequestCaller extends DatabaseBase {
         return Status.CREATED;
     }
 
+    private boolean checkIfAPIKeyIsUnique(String APIKey) {
+        try (CallableStatement statement = getConnection().prepareCall("{call CheckIfAPIKeyExists(?)}")){
+            statement.setString(1, APIKey);
+
+            statement.execute();
+
+            if (statement.getResultSet().next()){
+                return false;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        return true;
+    }
+
     private Status createAPIUser(String emailAddress) {
         if (isInputInvalid(emailAddress)){
             return Status.BAD_REQUEST;
