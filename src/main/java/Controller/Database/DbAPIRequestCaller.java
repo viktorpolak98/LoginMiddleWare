@@ -113,7 +113,9 @@ public class DbAPIRequestCaller extends DatabaseBase {
         return Status.CREATED;
     }
 
-    private boolean checkIfAPIKeyIsUnique(String APIKey) {
+    public boolean checkIfAPIKeyIsUnique(String APIKey) throws SQLException {
+        connect();
+
         try (CallableStatement statement = getConnection().prepareCall("{call CheckIfAPIKeyExists(?)}")){
             statement.setString(1, APIKey);
 
@@ -126,6 +128,8 @@ public class DbAPIRequestCaller extends DatabaseBase {
             e.printStackTrace();
             return false;
         }
+
+        disconnect();
 
         return true;
     }

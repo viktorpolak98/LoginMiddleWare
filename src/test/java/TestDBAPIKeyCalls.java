@@ -6,7 +6,7 @@ import org.junit.jupiter.api.*;
 
 import java.sql.*;
 
-public class TestDBAuthenticationCalls {
+public class TestDBAPIKeyCalls {
 
     private static DbAPIRequestCaller dbAPIRequestCaller;
     private final String emailAddress = "example@example.com";
@@ -116,6 +116,23 @@ public class TestDBAuthenticationCalls {
         Assertions.assertEquals(Status.BAD_REQUEST, dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.InvalidateKey, emailAddress, null)));
 
         Assertions.assertEquals(Status.BAD_REQUEST, dbAPIRequestCaller.execute(new DbAPIKeyRequest(DbAPIKeyCalls.InvalidateKey, null, APIKey)));
+
+    }
+
+    @Test
+    public void testAPIKeyUniqueness() {
+        Assumptions.assumeTrue(setupUsersAndKeys());
+
+        try {
+            Assertions.assertFalse(dbAPIRequestCaller.checkIfAPIKeyIsUnique(APIKey));
+            Assertions.assertFalse(dbAPIRequestCaller.checkIfAPIKeyIsUnique(APIKey2));
+
+            Assertions.assertTrue(dbAPIRequestCaller.checkIfAPIKeyIsUnique("new_"+APIKey));
+            Assertions.assertTrue(dbAPIRequestCaller.checkIfAPIKeyIsUnique("new_"+APIKey2));
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+
 
     }
 
